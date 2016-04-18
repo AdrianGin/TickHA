@@ -22,7 +22,6 @@
 //TODO: Set ALL pins to OUTPUT mode and OFF to save power
 //TODO: Disable ADC
 
-
 #define DEBUG_LED (PORTB)
 #define DEBUG_LED_PIN (1<<1)
 #define INPUT_SWITCH (PINC)
