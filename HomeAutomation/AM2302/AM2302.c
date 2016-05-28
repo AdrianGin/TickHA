@@ -4,6 +4,8 @@
 #include <avr/interrupt.h>
 #include <avr/power.h>
 
+#include "UART/uart.h"
+
 #define DEBUG_LED (PORTD)
 #define DEBUG_LED_PIN (1<<6)
 #define INPUT_SWITCH (PINC)
@@ -13,10 +15,18 @@
 int main(void)
 {
 
+
+
 	clock_prescale_set(clock_div_1);
 	DDRD |= (DEBUG_LED_PIN);				//Set B1 to output for dbg LED
 	DEBUG_LED &= ~DEBUG_LED_PIN;			//Turn off dbg LED
 
+	uartInit(BAUD19200, FAST);
+	/*Enable interrupts*/
+	sei();
+
+	/*Enable receive complete interrupt*/
+	UCSR0B |=	(1<<RXCIE0);
 
 	while(1)
 	{
@@ -29,11 +39,23 @@ int main(void)
 		_delay_ms(500);
 		DEBUG_LED &= ~(DEBUG_LED_PIN);
 		//======
+
+		uartTxString("The temperature is: ");
+
+
 	}
 
 
 	return 0;
 }
+
+
+ISR(USART_RX_vect)
+{
+	//uartTxString("Rcvd its working");
+	uartTx(UDR0);
+}
+
 
 
 
