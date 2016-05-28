@@ -109,13 +109,69 @@
  */
 #define FAST 1
 #define SLOW 0
-void uartInit(uint8_t baudrate, uint8_t U2Xvalue);
+
+//UCSRnA Bit defs
+#define MPCMn MPCM0
+#define U2Xn  U2X0
+#define UPEn  UPE0
+#define DORn  DOR0
+#define FEn   FE0
+#define UDREn UDRE0
+#define TXCn  TXC0
+#define RXCn  RXC0
+
+//UCSRnB Bit defs
+#define TXB8n TXB80
+#define RXB8n RXB80
+#define UCSZn2 UCSZ02
+#define TXENn TXEN0
+#define RXENn RXEN0
+#define UDRIEn UDRIE0
+#define TXCIEn TXCIE0
+#define RXCIEn RXCIE0
+
+
+//UCSRnc Bit defs
+#define UCPOLn UCPOL0
+#define UCSZn0 UCSZ00
+#define UCPHAn UCPHA0
+#define UCSZn1 UCSZ01
+#define UDORDn UDORD0
+#define USBSn  USBS0
+#define UPMn0  UPM00
+#define UPMn1  UPM01
+#define UMSELn0 UMSEL00
+#define UMSELn1 UMSEL01
+
+typedef struct USARTn {
+
+	volatile uint8_t* UCSRnA;
+	volatile uint8_t* UCSRnB;
+	volatile uint8_t* UCSRnC;
+
+	volatile uint8_t* UBRRnH;
+	volatile uint8_t* UBRRnL;
+
+	volatile uint8_t* UDRn;
+
+} USARTn_t;
+
+#ifdef __AVR_HAVE_PRR_PRUSART0
+extern USARTn_t USART0;
+#endif
+
+#ifdef __AVR_HAVE_PRR_PRUSART1
+extern USARTn_t USART1;
+#endif
+
+
+void USARTn_Init(USARTn_t* uart, uint8_t baudrate, uint8_t U2Xvalue);
 
 
 
 /** uartDisable:
  * Disables the Receiver and Transmitter modules*/
-void uartDisable(void);
+void USARTn_Disable(USARTn_t* uart);
 
 
 
@@ -124,7 +180,7 @@ void uartDisable(void);
  * See the datasheet for more details on what the
  * Baudrate generation registers should be.
  */
-void uartSetBaud(uint8_t baudrateL, uint8_t baudrateH);
+void USARTn_SetBaud(USARTn_t* uart, uint8_t baudrateL, uint8_t baudrateH);
 
 
 /** uartTxString:
@@ -132,21 +188,21 @@ void uartSetBaud(uint8_t baudrateL, uint8_t baudrateH);
  * The output is true ouput, not inverted, so a MAX232 or some sort of
  * TTL -> +/- 15V converter is required.
  */
-void uartTxString(uint8_t* outString);
+void USARTn_TxString(USARTn_t* uart, char* outString);
 
-void uartTxString_P(const char* outString_P);
+void USARTn_TxString_P(USARTn_t* uart, const char* outString_P);
 
 /** uartTx:
  *
  * Transmits the passed byte to the Uart.Tx pin.
  *
  */
-void uartTx(uint8_t outbyte);
+void USARTn_Tx(USARTn_t* uart, uint8_t outbyte);
 
 /** uartTxDump:
  *  Prints out nbytes of buffer to the UART
  */
-void uartTxDump(uint8_t* buffer, uint8_t nbytes );
+void USARTn_TxDump(USARTn_t* uart, uint8_t* buffer, uint8_t nbytes );
 
 /* ISR(SIG_UART_RECV)
  *
@@ -154,6 +210,6 @@ void uartTxDump(uint8_t* buffer, uint8_t nbytes );
  */
 //ISR(SIG_UART_RECV);
 
-void uartNewLine(void);
+void USARTn_NewLine(USARTn_t* uart);
 
 #endif

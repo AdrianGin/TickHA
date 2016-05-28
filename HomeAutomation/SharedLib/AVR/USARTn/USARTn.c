@@ -12,8 +12,8 @@
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
-#include	<util/delay.h>
-#include	"UART.h"
+#include <util/delay.h>
+#include <USARTn/USARTn.h>
 /* uartInit:
  * Initialises the baudrate, parity, stop bit generation and 8bit mode
  * It must be called before any hardUart function is used 
@@ -21,13 +21,36 @@
  * Interrupts are not set by default.
  *
  */
-void uartInit(uint8_t baudrate, uint8_t U2Xvalue)
+
+#ifdef __AVR_HAVE_PRR_PRUSART0
+USARTn_t USART0 = {
+	.UCSRnA = &UCSR0A,
+	.UCSRnB = &UCSR0B,
+	.UCSRnC = &UCSR0C,
+	.UBRRnH = &UBRR0H,
+	.UBRRnL = &UBRR0L,
+	.UDRn   = &UDR0
+};
+#endif
+
+#ifdef __AVR_HAVE_PRR_PRUSART1
+USARTn_t USART1 = {
+	.UCSRnA = &UCSR1A,
+	.UCSRnB = &UCSR1B,
+	.UCSRnC = &UCSR1C,
+	.UBRRnH = &UBRR1H,
+	.UBRRnL = &UBRR1L,
+	.UDRn   = &UDR1
+};
+#endif
+
+void USARTn_Init(USARTn_t* uart, uint8_t baudrate, uint8_t U2Xvalue)
 {
 	/*Setup the U2X Bit*/
-	UCSR0A	=	(UCSR0A & (~(1<<U2X0))) | (U2Xvalue << U2X0);
+	*uart->UCSRnA	=	(*uart->UCSRnA & (~(1<<U2Xn))) | (U2Xvalue << U2Xn);
 	
-	UCSR0B |= (1<<RXEN0) | (1<<TXEN0);	/*Enable Rx and Tx modules*/
-	UCSR0B &= ~(1<<UCSZ02);				/*Set to 8bit mode*/
+	*uart->UCSRnB |= (1<<RXENn) | (1<<TXENn);	/*Enable Rx and Tx modules*/
+	*uart->UCSRnB &= ~(1<<UCSZn2);				/*Set to 8bit mode*/
 	
 
 	/*Select UCSRC to be written to*/	
@@ -36,10 +59,10 @@ void uartInit(uint8_t baudrate, uint8_t U2Xvalue)
 	 *			 No Parity
 	 *			 8-bit char mode
 	 */
-	UCSR0C = (UCSR0C & ~( UCSRCMASK )) | (NOPARITY<<UPM00) | (BIT8 << UCSZ00);
+	*uart->UCSRnC = (*uart->UCSRnC & ~( UCSRCMASK )) | (NOPARITY<<UPMn0) | (BIT8 << UCSZn0);
 
 	/*Set the baud rate to the desired rate*/
-	uartSetBaud(baudrate, 0);
+	USARTn_SetBaud(uart, baudrate, 0);
 }
 
 /* uartSetBaud:
@@ -47,20 +70,20 @@ void uartInit(uint8_t baudrate, uint8_t U2Xvalue)
  * See the datasheet for more details on what the
  * Baudrate generation registers should be.
  */
-void uartSetBaud(uint8_t baudrateL, uint8_t baudrateH)
+void USARTn_SetBaud(USARTn_t* uart, uint8_t baudrateL, uint8_t baudrateH)
 {
-	UBRR0H = 	baudrateH;
+	*uart->UBRRnH = 	baudrateH;
 	/* The lower 8bits must be written last as the baudrate generator
 	 * is updated as soon as UBRRL is written to*/
-	UBRR0L	=	baudrateL;
+	*uart->UBRRnL	=	baudrateL;
 
 }
 
 
 /* Disables the Receiver and Transmitter modules*/
-void uartDisable(void)
+void USARTn_Disable(USARTn_t* uart)
 {
-	UCSR0B &= ~((1<<RXEN0) | (1<<TXEN0));	/*Disable Rx and Tx modules*/
+	*uart->UCSRnB &= ~((1<<RXENn) | (1<<TXENn));	/*Disable Rx and Tx modules*/
 	
 }
 
@@ -69,22 +92,22 @@ void uartDisable(void)
  * Transmits the passed byte to the Uart.Tx pin.
  *
  */
-void uartTx(uint8_t outbyte)
+void USARTn_Tx(USARTn_t* uart, uint8_t outbyte)
 {
 	/*Wait until output shift register is empty*/	
-	while( (UCSR0A & (1<<UDRE0)) == 0 );
+	while( ((*uart->UCSRnA) & (1<<UDREn)) == 0 );
 		
 	/*Send byte to output buffer*/
-	UDR0	= outbyte;
+	*(uart->UDRn)	= outbyte;
 }
 
 /** Writes nbytes of buffer to the UART */
-void uartTxDump(uint8_t* buffer, uint8_t nbytes )
+void USARTn_TxDump(USARTn_t* uart, uint8_t* buffer, uint8_t nbytes )
 {
 	uint16_t i = 0;
 	while( i++ < nbytes )
 	{
-		uartTx(*buffer++);
+		USARTn_Tx(uart, *buffer++);
 	}
 }
 
@@ -94,32 +117,32 @@ void uartTxDump(uint8_t* buffer, uint8_t nbytes )
  * The output is true ouput, not inverted, so a MAX232 or some sort of
  * TTL -> +/- 15V converter is required.
  */
-void uartTxString(uint8_t* outString)
+void USARTn_TxString(USARTn_t* uart, char* outString)
 {
 	while( *outString )
 	{
-		uartTx(*outString++);
+		USARTn_Tx(uart, *outString++);
    }
 	
 }
 
 /* Usage: uartTxString_P( PSTR("hello!") ); */
 /* Send a string which resides in the program memory */
-void uartTxString_P(const char* outString_P)
+void USARTn_TxString_P(USARTn_t* uart, const char* outString_P)
 {
 
    char c;
 
    while( (c = pgm_read_byte(outString_P++)) )
    {
-      uartTx(c);    
+	   USARTn_Tx(uart, c);
    }
 }
 
-void uartNewLine(void)
+void USARTn_NewLine(USARTn_t* uart)
 {
-   uartTx('\r');
-   uartTx('\n'); 
+	USARTn_Tx(uart, '\r');
+	USARTn_Tx(uart, '\n');
 }
 
 /* To echo the receiver buffer, write this code in the main.c file */
