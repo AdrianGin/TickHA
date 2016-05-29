@@ -13,7 +13,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
-#include <USARTn/USARTn.h>
+#include "USARTn.h"
 /* uartInit:
  * Initialises the baudrate, parity, stop bit generation and 8bit mode
  * It must be called before any hardUart function is used 

@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "AM2302.h"
 
-#include "USARTn/USARTn.h"
+#include "USARTn.h"
 
 //Sets up port as output high, ready for request.
 void AM2302_Init(AM2302_t* dev)
