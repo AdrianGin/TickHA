@@ -76,7 +76,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="Util|AVR|Devices" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="USARTn/example.c|UART/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
+						<entry excluding="USARTn_example.c|USARTn/example.c|UART/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
