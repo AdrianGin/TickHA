@@ -26,7 +26,7 @@ typedef struct AM2302_Temp
 } AM2302_Temp_t;
 
 
-
+#define AM2302_TEMPSIGN_BIT (0x8000)
 #define AM2302_Delay_us(us) _delay_us(us)
 
 
@@ -38,8 +38,9 @@ uint8_t AM2302_RequestData(AM2302_t* dev);
 
 uint8_t AM2302_GetBit(AM2302_t* dev);
 
-uint16_t AM2302_GetTemperature(AM2302_t* dev);
-uint16_t AM2302_GetHumidity(AM2302_t* dev);
+int8_t AM2302_GetTemperature(AM2302_t* dev);
+int8_t AM2302_GetHumidity(AM2302_t* dev);
 
-
+uint16_t AM2302_GetRawTemperature(AM2302_t* dev);
+uint16_t AM2302_GetRawHumidity(AM2302_t* dev);
 

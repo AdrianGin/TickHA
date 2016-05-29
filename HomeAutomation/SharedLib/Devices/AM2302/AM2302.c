@@ -15,20 +15,14 @@ void AM2302_Init(AM2302_t* dev)
 
 void AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
 {
-
-
 	for( uint8_t retry = 255; retry != 0; --retry )
 	{
 		if((*dev->pin_in_reg & (1<<dev->pin_index)) == (bitstate<<dev->pin_index) )
 		{
 			break;
 		}
-
 		AM2302_Delay_us(10);
-
 	}
-
-
 }
 
 //Sends a start signal of 1ms low, followed by a bus release,
@@ -110,16 +104,29 @@ uint8_t AM2302_GetBit(AM2302_t* dev)
 }
 
 
-uint16_t AM2302_GetTemperature(AM2302_t* dev)
+uint16_t AM2302_GetRawTemperature(AM2302_t* dev)
 {
 	return dev->temperature;
 }
 
-uint16_t AM2302_GetHumidity(AM2302_t* dev)
+uint16_t AM2302_GetRawHumidity(AM2302_t* dev)
 {
 	return dev->humidity;
 }
 
 
+int8_t AM2302_GetTemperature(AM2302_t* dev)
+{
+	if( dev->temperature & AM2302_TEMPSIGN_BIT )
+	{
+		return -(dev->temperature / 10);
+	}
 
+	return (dev->temperature / 10);
+}
+
+int8_t AM2302_GetHumidity(AM2302_t* dev)
+{
+	return dev->humidity / 10;
+}
 

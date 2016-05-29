@@ -8,7 +8,7 @@
 #include "USARTn/USARTn.h"
 #include "AM2302/AM2302.h"
 
-#include "uint16toa.h"
+#include <stdlib.h>
 
 #define DEBUG_LED (PORTD)
 #define DEBUG_LED_PIN (1<<6)
@@ -63,13 +63,14 @@ int main(void)
 		}
 		else
 		{
+
 			USARTn_TxString(&USART0, ("The humidity is: "));
-			uint16toa( AM2302_Device.humidity, &outputString[0], 0);
+			itoa( AM2302_GetHumidity(&AM2302_Device), &outputString[0], 10);
 			USARTn_TxString(&USART0, outputString);
 			USARTn_NewLine(&USART0);
 
 			USARTn_TxString(&USART0, ("The temperature is: "));
-			uint16toa( AM2302_Device.temperature, &outputString[0], 0);
+			itoa( AM2302_GetTemperature(&AM2302_Device), &outputString[0], 10);
 			USARTn_TxString(&USART0, outputString);
 			USARTn_NewLine(&USART0);
 			USARTn_NewLine(&USART0);
