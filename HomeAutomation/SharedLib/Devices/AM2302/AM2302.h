@@ -26,6 +26,10 @@ typedef struct AM2302_Temp
 } AM2302_Temp_t;
 
 
+//Error codes
+#define AM2302_ERR_PARITY     (1)
+#define AM2302_ERR_CONNECTION (2)
+
 #define AM2302_TEMPSIGN_BIT (0x8000)
 #define AM2302_Delay_us(us) _delay_us(us)
 
@@ -33,7 +37,7 @@ typedef struct AM2302_Temp
 //Sets up port as output high, ready for request.
 void AM2302_Init(AM2302_t* dev);
 
-void AM2302_WaitState(AM2302_t* dev, uint8_t bitstate);
+uint8_t AM2302_WaitState(AM2302_t* dev, uint8_t bitstate);
 uint8_t AM2302_RequestData(AM2302_t* dev);
 
 uint8_t AM2302_GetBit(AM2302_t* dev);

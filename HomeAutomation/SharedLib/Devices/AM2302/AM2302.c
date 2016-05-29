@@ -13,22 +13,26 @@ void AM2302_Init(AM2302_t* dev)
 }
 
 
-void AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
+uint8_t AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
 {
 	for( uint8_t retry = 255; retry != 0; --retry )
 	{
 		if((*dev->pin_in_reg & (1<<dev->pin_index)) == (bitstate<<dev->pin_index) )
 		{
-			break;
+			return 0;
 		}
 		AM2302_Delay_us(10);
 	}
+
+	return 1;
 }
 
 //Sends a start signal of 1ms low, followed by a bus release,
 //Waits for 100us and waits for pin to go low. (Should be after 180us)
 uint8_t AM2302_RequestData(AM2302_t* dev)
 {
+	uint8_t connectionError = 0;
+
 	AM2302_Init(dev);
 
 	*dev->pin_out_reg &= ~(1<<dev->pin_index);
@@ -38,11 +42,11 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 	//Release bus
 	*dev->pin_dir_reg &= ~(1 << (dev->pin_index));
 
-	AM2302_WaitState(dev, 1);
-	AM2302_WaitState(dev, 0);
+	connectionError += AM2302_WaitState(dev, 1);
+	connectionError += AM2302_WaitState(dev, 0);
 
-	AM2302_WaitState(dev, 1);
-	AM2302_WaitState(dev, 0);
+	connectionError += AM2302_WaitState(dev, 1);
+	connectionError += AM2302_WaitState(dev, 0);
 
 	uint16_t humidity = 0;
 	uint16_t temperature = 0;
@@ -73,6 +77,11 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 
 
 
+	if( connectionError )
+	{
+		return AM2302_ERR_CONNECTION;
+	}
+
 	if( parity == calculatedParity )
 	{
 
@@ -80,9 +89,10 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 		dev->temperature = temperature;
 		return 0;
 	}
-
-	return 1;
-
+	else
+	{
+		return AM2302_ERR_PARITY;
+	}
 }
 
 

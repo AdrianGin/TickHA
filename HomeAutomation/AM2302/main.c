@@ -56,28 +56,34 @@ int main(void)
 		DEBUG_LED &= ~(DEBUG_LED_PIN);
 		_delay_ms(1000);
 
-		if( AM2302_RequestData(&AM2302_Device) )
+		uint8_t err = AM2302_RequestData(&AM2302_Device);
+
+		switch( err )
 		{
-			USARTn_TxString(&USART0, ("Read data failed!"));
-			USARTn_NewLine(&USART0);
+			case AM2302_ERR_PARITY:
+				USARTn_TxString(&USART0, ("Parity Error"));
+				USARTn_NewLine(&USART0);
+				break;
+
+			case AM2302_ERR_CONNECTION:
+				USARTn_TxString(&USART0, ("Connection Error"));
+				USARTn_NewLine(&USART0);
+				break;
+
+			default:
+				USARTn_TxString(&USART0, ("The humidity is: "));
+				itoa( AM2302_GetHumidity(&AM2302_Device), &outputString[0], 10);
+				USARTn_TxString(&USART0, outputString);
+				USARTn_NewLine(&USART0);
+
+				USARTn_TxString(&USART0, ("The temperature is: "));
+				itoa( AM2302_GetTemperature(&AM2302_Device), &outputString[0], 10);
+				USARTn_TxString(&USART0, outputString);
+				USARTn_NewLine(&USART0);
+				USARTn_NewLine(&USART0);
+				USARTn_NewLine(&USART0);
+				break;
 		}
-		else
-		{
-
-			USARTn_TxString(&USART0, ("The humidity is: "));
-			itoa( AM2302_GetHumidity(&AM2302_Device), &outputString[0], 10);
-			USARTn_TxString(&USART0, outputString);
-			USARTn_NewLine(&USART0);
-
-			USARTn_TxString(&USART0, ("The temperature is: "));
-			itoa( AM2302_GetTemperature(&AM2302_Device), &outputString[0], 10);
-			USARTn_TxString(&USART0, outputString);
-			USARTn_NewLine(&USART0);
-			USARTn_NewLine(&USART0);
-			USARTn_NewLine(&USART0);
-		}
-
-
 	}
 
 
