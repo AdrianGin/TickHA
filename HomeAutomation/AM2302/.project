@@ -30,5 +30,15 @@
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/SharedLib/AVR</locationURI>
 		</link>
+		<link>
+			<name>Devices</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/SharedLib/Devices</locationURI>
+		</link>
+		<link>
+			<name>Util</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/SharedLib/Util</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>
