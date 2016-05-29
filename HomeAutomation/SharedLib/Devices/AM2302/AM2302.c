@@ -15,7 +15,20 @@ void AM2302_Init(AM2302_t* dev)
 
 void AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
 {
-	while( (*dev->pin_in_reg & (1<<dev->pin_index)) != (bitstate<<dev->pin_index) );
+
+
+	for( uint8_t retry = 255; retry != 0; --retry )
+	{
+		if((*dev->pin_in_reg & (1<<dev->pin_index)) == (bitstate<<dev->pin_index) )
+		{
+			break;
+		}
+
+		AM2302_Delay_us(10);
+
+	}
+
+
 }
 
 //Sends a start signal of 1ms low, followed by a bus release,
