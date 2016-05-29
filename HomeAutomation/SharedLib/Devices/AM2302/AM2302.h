@@ -1,4 +1,5 @@
-
+#ifndef _AM2302_DEVICE
+#define _AM2302_DEVICE
 
 #include <stdint.h>
 #include <util/delay.h>
@@ -48,3 +49,5 @@ int8_t AM2302_GetHumidity(AM2302_t* dev);
 uint16_t AM2302_GetRawTemperature(AM2302_t* dev);
 uint16_t AM2302_GetRawHumidity(AM2302_t* dev);
 
+
+#endif
