@@ -5,6 +5,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "WirelessTransmitter", "Wire
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "WirelessReceiver", "WirelessReceiver\WirelessReceiver.cproj", "{8855873F-0052-4A2B-ACB3-0D63B8E1FC27}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "WirelessAM2302", "WirelessAM2302\WirelessAM2302.cproj", "{61217612-B2E4-4A05-BDC9-CB933B8E48D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -19,6 +21,10 @@ Global
 		{8855873F-0052-4A2B-ACB3-0D63B8E1FC27}.Debug|AVR.Build.0 = Debug|AVR
 		{8855873F-0052-4A2B-ACB3-0D63B8E1FC27}.Release|AVR.ActiveCfg = Release|AVR
 		{8855873F-0052-4A2B-ACB3-0D63B8E1FC27}.Release|AVR.Build.0 = Release|AVR
+		{61217612-B2E4-4A05-BDC9-CB933B8E48D9}.Debug|AVR.ActiveCfg = Debug|AVR
+		{61217612-B2E4-4A05-BDC9-CB933B8E48D9}.Debug|AVR.Build.0 = Debug|AVR
+		{61217612-B2E4-4A05-BDC9-CB933B8E48D9}.Release|AVR.ActiveCfg = Release|AVR
+		{61217612-B2E4-4A05-BDC9-CB933B8E48D9}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

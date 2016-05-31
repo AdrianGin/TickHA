@@ -5,8 +5,8 @@
 #include <avr/power.h>
 
 #include <avr/pgmspace.h>
-#include "USARTn/USARTn.h"
-#include "AM2302/AM2302.h"
+#include "USARTn.h"
+#include "AM2302.h"
 
 #include <stdlib.h>
 
