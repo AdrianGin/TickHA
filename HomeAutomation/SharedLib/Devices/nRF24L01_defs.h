@@ -143,4 +143,5 @@
 #define REUSE_TX_PL   0xE3
 #define ACTIVATE      0x50 
 #define R_RX_PL_WID   0x60
+#define W_TX_PAYLOAD_NACK (0xB0)
 #define NOP           0xFF

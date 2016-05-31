@@ -46,8 +46,8 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1003260305" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1303174898" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;/${ProjName}/Devices&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Util}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Devices}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.688917285" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -67,8 +67,8 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.assembler.130116362" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
 								<option id="gnu.both.asm.option.include.paths.2027606496" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/AVR}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AM2302/${ProjName}/Devices/}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Util}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Devices/}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1875553008" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -76,7 +76,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry excluding="Util|AVR|Devices" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="USARTn/example.c|UART/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
+						<entry excluding="USARTn_example.c|USARTn/example.c|UART/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
