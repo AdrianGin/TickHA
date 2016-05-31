@@ -1,31 +1,19 @@
-#include <avr/io.h>
-#include <stdint.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
-#include <avr/power.h>
 
-#include <avr/pgmspace.h>
+
 #include "USARTn.h"
 #include "AM2302.h"
 
 #include <stdlib.h>
 
-#define DEBUG_LED (PORTD)
-#define DEBUG_LED_PIN (1<<6)
+#include "hardwareSpecific.h"
+
+#define DEBUG_LED_DDR (DDRB)
+#define DEBUG_LED (PORTB)
+#define DEBUG_LED_PIN (1<<0)
 #define INPUT_SWITCH (PINC)
 #define INPUT_SWITCH_PIN (1<<2)
 #define INPUT_SWITCH_PIN2 (1<<3)
 
-AM2302_t AM2302_Device = {
-	.pin_dir_reg = &DDRC,
-	.pin_out_reg = &PORTC,
-	.pin_in_reg  = &PINC,
-
-	.pin_index  = PC5,
-
-
-
-};
 
 
 int main(void)
@@ -35,7 +23,7 @@ int main(void)
 
 
 	clock_prescale_set(clock_div_1);
-	DDRD |= (DEBUG_LED_PIN);				//Set B1 to output for dbg LED
+	DEBUG_LED_DDR |= (DEBUG_LED_PIN);				//Set B1 to output for dbg LED
 	DEBUG_LED &= ~DEBUG_LED_PIN;			//Turn off dbg LED
 
 	USARTn_Init(&USART0, BAUD19200, FAST);
@@ -45,14 +33,22 @@ int main(void)
 	/*Enable receive complete interrupt*/
 	*USART0.UCSRnB |= (1<<RXCIEn);
 
+	SPI_Init();
+	nRF24L01_Init(&nRF24L01_Device);
+	nRF24L01_SetAckState(&nRF24L01_Device , 1);
+
+	uint8_t rxAddress[] = {0x00, 0x00, 0x00, 0x00, 0x01};
+
 	while(1)
 	{
 
-
-
+		nRF24L01_Transmit(&nRF24L01_Device, &rxAddress, "Hello", 34 );
+		nRF24L01_TransferSync(&nRF24L01_Device);
 		//Perform a double blink to indicate it is working
 		DEBUG_LED |= (DEBUG_LED_PIN);
 		_delay_ms(1000);
+
+
 		DEBUG_LED &= ~(DEBUG_LED_PIN);
 		_delay_ms(1000);
 
