@@ -1,9 +1,7 @@
 
-<<<<<<< HEAD
-#include <avr/pgmspace.h>
-=======
 
->>>>>>> b6f32ac850cf5a1a0fbffd05dcf4e1a44df2ec6e
+#include <avr/pgmspace.h>
+
 #include "USARTn.h"
 #include "AM2302.h"
 
@@ -19,6 +17,8 @@
 #define INPUT_SWITCH_PIN2 (1<<3)
 
 
+volatile uint8_t rxChar = 0;
+volatile uint8_t rxFlag = 0;
 
 int main(void)
 {
@@ -43,23 +43,26 @@ int main(void)
 	nRF24L01_Init(&nRF24L01_Device);
 	nRF24L01_SetAckState(&nRF24L01_Device , 1);
 
-	uint8_t payload_len = 1;
-	nRF24L01_WriteRegister(&nRF24L01_Device, RX_PW_P1, &payload_len, 1);
-
 	uint8_t dest_Address[] = {0xE8,0xE8,0xE8,0xE8,0xE8};
 
 	while(1)
 	{
 
-		nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], "Hello", 1 );
-		nRF24L01_TransferSync(&nRF24L01_Device);
+		nRF24L01_MainService(&nRF24L01_Device);
 		//Perform a double blink to indicate it is working
-		DEBUG_LED |= (DEBUG_LED_PIN);
-		_delay_ms(1000);
-		DEBUG_LED &= ~(DEBUG_LED_PIN);
-		_delay_ms(1000);
 
 		uint8_t err = AM2302_RequestData(&AM2302_Device);
+		if( rxFlag )
+		{
+			nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], &rxChar, 1);
+			nRF24L01_TransferSync(&nRF24L01_Device);
+			rxFlag = 0;
+		}
+
+		DEBUG_LED &= ~(1<<DEBUG_LED_PIN);
+		_delay_ms(1000);
+		DEBUG_LED |= (1<<DEBUG_LED_PIN);
+		_delay_ms(1000);
 
 		switch( err )
 		{
@@ -74,18 +77,34 @@ int main(void)
 				break;
 
 			default:
-				USARTn_TxString(&USART0, ("The humidity is: "));
-				itoa( AM2302_GetHumidity(&AM2302_Device), &outputString[0], 10);
-				USARTn_TxString(&USART0, outputString);
-				USARTn_NewLine(&USART0);
+				{
+					uint8_t humidityStr[25] = "The humidity is: ";
+					uint8_t tempStr[25] = "The temperature is: ";
 
-				USARTn_TxString(&USART0, ("The temperature is: "));
-				itoa( AM2302_GetTemperature(&AM2302_Device), &outputString[0], 10);
-				USARTn_TxString(&USART0, outputString);
-				USARTn_NewLine(&USART0);
-				USARTn_NewLine(&USART0);
-				USARTn_NewLine(&USART0);
-				break;
+					USARTn_TxString(&USART0, (humidityStr));
+					itoa( AM2302_GetHumidity(&AM2302_Device), &outputString[0], 10);
+					USARTn_TxString(&USART0, outputString);
+					USARTn_NewLine(&USART0);
+
+					strcat(humidityStr, outputString);
+					strncat(humidityStr, "\n", 2);
+					nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], humidityStr, strlen(humidityStr)+1);
+					nRF24L01_TransferSync(&nRF24L01_Device);
+
+					USARTn_TxString(&USART0, (tempStr));
+					itoa( AM2302_GetTemperature(&AM2302_Device), &outputString[0], 10);
+					USARTn_TxString(&USART0, outputString);
+					USARTn_NewLine(&USART0);
+					USARTn_NewLine(&USART0);
+					USARTn_NewLine(&USART0);
+
+					strcat(tempStr, outputString);
+					strncat(tempStr, "\n", 2);
+					nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], tempStr, strlen(tempStr)+1);
+					nRF24L01_TransferSync(&nRF24L01_Device);
+
+					break;
+				}
 		}
 	}
 
@@ -94,10 +113,13 @@ int main(void)
 }
 
 
+
 ISR(USART_RX_vect)
 {
+	rxChar = UDR0;
+	rxFlag = 1;
 	//uartTxString("Rcvd its working");
-	USARTn_Tx(&USART0, UDR0);
+	USARTn_Tx(&USART0, rxChar);
 }
 
 

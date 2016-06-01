@@ -97,12 +97,10 @@ void nRF24L01_TransmitPayload(nRF24L01_t* dev)
 			uint8_t statusByte = nRF24L01_ReadRegister(dev, NOP, NULL , 0);
 			if( ! (statusByte & (1<<TX_FULL)) )
 			{
-
 				bytesToSend = (bytesRemaining >= FIFO_SIZE) ? FIFO_SIZE : bytesRemaining;
 				nRF24L01_WriteRegister(dev, writeTxPayloadRegister, &dev->tx_payload[dev->tx_payloadIndex], bytesToSend);
 				dev->tx_payloadIndex += bytesToSend;
 				bytesRemaining = dev->tx_payloadSize - dev->tx_payloadIndex;
-
 				LOG_PRINT_DEC(LOG_DEBUG, "FIFO Write Size: ", bytesToSend);
 
 			}
@@ -112,12 +110,6 @@ void nRF24L01_TransmitPayload(nRF24L01_t* dev)
 			}
 		}
 	}
-
-	uint8_t debugAddr[5];
-	nRF24L01_ReadRegister(dev, TX_ADDR, &debugAddr[0], 5);
-	LOG_PRINT_HEXDUMP(LOG_DEBUG, "TXADDR: ", &debugAddr[0], 5);
-	nRF24L01_ReadRegister(dev, RX_ADDR_P0, &debugAddr[0], 5);
-	LOG_PRINT_HEXDUMP(LOG_DEBUG, "RX P0: ", &debugAddr[0], 5);
 
 	//Enable PTX
 	uint8_t data = (1<<EN_CRC) | (1<<PWR_UP);
@@ -293,7 +285,7 @@ void nRF24L01_WriteVerifyRegister(nRF24L01_t* dev, uint8_t cmd, uint8_t data)
 	uint8_t dataVerify;
 	nRF24L01_WriteRegister(dev, cmd, &data, 1);
 	nRF24L01_ReadRegister(dev, cmd, &dataVerify, 1);
-	if( data == dataVerify )
+	if( data != dataVerify )
 	{
 		LOG_PRINT_HEX(LOG_ERR, "Verification Error = ", dataVerify);
 		LOG_PRINT_HEX(LOG_ERR, "Expected = ", data);
@@ -336,18 +328,18 @@ void nRF24L01_Init(nRF24L01_t* dev)
 
 	//Enable the W_TX_PAYLOAD_NOACK and W_RX_PAYLOAD command and Dynamic Payloads
 	data = (1<< EN_DYN_ACK) | (1<<EN_DPL) | (1<<EN_ACK_PAY);
-	//nRF24L01_WriteVerifyRegister(dev, FEATURE, data);
+	nRF24L01_WriteVerifyRegister(dev, FEATURE, data);
 
 	//Enable dynamic payloads on all pipes.
 	data = (1<<DPL_P0) | (1<<DPL_P1) | (1<<DPL_P2) | (1<<DPL_P3) | (1<<DPL_P4) | (1<<DPL_P5);
-	//nRF24L01_WriteVerifyRegister(dev, DYNPD, data);
+	nRF24L01_WriteVerifyRegister(dev, DYNPD, data);
 
 	//Set 15 retries at 750us delays
 	data = (0x04 << ARD) | (0x0F << ARC);
 	nRF24L01_WriteVerifyRegister(dev, SETUP_RETR, data);
 
 	//Set for 250kbps air speed, 0dBm power output
-	data = (0x00 << RF_DR_LOW) | (0x00 << RF_DR_HIGH) | (0x03 << RF_PWR);
+	data = (0x01 << RF_DR_LOW) | (0x00 << RF_DR_HIGH) | (0x03 << RF_PWR);
 	nRF24L01_WriteVerifyRegister(dev, RF_SETUP, data);
 
 

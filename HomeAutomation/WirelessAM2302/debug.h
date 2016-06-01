@@ -34,10 +34,11 @@ void log_print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16_
 
 #else
 
-#define LOG_PRINT(level, string) (void(0))
-#define LOG_PRINT_DEC(level, string, num) (void(0))
-#define LOG_PRINT_HEX(level, string, num) (void(0))
-#define LOG_PRINT_HEXDUMP(level, string, ptr, num) (void(0))
+#define LOG_PRINT(level, string) ((void)0)
+#define LOG_PRINT_DEC(level, string, num) ((void)0)
+#define LOG_PRINT_HEX(level, string, num) ((void)0)
+#define LOG_PRINT_HEXDUMP(level, string, ptr, num) ((void)0)
+
 
 #endif
 

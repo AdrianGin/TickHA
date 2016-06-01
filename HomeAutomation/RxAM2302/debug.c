@@ -9,7 +9,7 @@
 
 
 
-uint8_t DebugLevel = LOG_DEBUG;
+uint8_t DebugLevel = LOG_INFO;
 
 
 
