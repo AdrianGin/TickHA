@@ -37,9 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../main.c \
-../nrf24.c \
-../radioPinFunctions.c
+../../SharedLib/Devices/nRF24L01.c \
+../main.c
 
 
 PREPROCESSING_SRCS += 
@@ -49,24 +48,20 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-main.o \
-nrf24.o \
-radioPinFunctions.o
+nRF24L01.o \
+main.o
 
 OBJS_AS_ARGS +=  \
-main.o \
-nrf24.o \
-radioPinFunctions.o
+nRF24L01.o \
+main.o
 
 C_DEPS +=  \
-main.d \
-nrf24.d \
-radioPinFunctions.d
+nRF24L01.d \
+main.d
 
 C_DEPS_AS_ARGS +=  \
-main.d \
-nrf24.d \
-radioPinFunctions.d
+nRF24L01.d \
+main.d
 
 OUTPUT_FILE_PATH +=WirelessReceiver.elf
 
@@ -87,7 +82,12 @@ LINKER_SCRIPT_DEP+=
 
 
 
-
+./%.o: ../../SharedLib/Devices/%.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 4.8.1
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DNDEBUG -DF_CPU=16000000UL  -Os -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -Wall -mmcu=atmega328 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
 
 ./%.o: .././%.c
 	@echo Building file: $<

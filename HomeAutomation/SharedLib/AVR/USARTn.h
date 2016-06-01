@@ -154,9 +154,9 @@ typedef struct USARTn {
 
 } USARTn_t;
 
-#ifdef __AVR_HAVE_PRR_PRUSART0
+//#ifdef __AVR_HAVE_PRR_PRUSART0
 extern USARTn_t USART0;
-#endif
+//#endif
 
 #ifdef __AVR_HAVE_PRR_PRUSART1
 extern USARTn_t USART1;

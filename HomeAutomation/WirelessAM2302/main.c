@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
+#include <avr/pgmspace.h>
+=======
 
+>>>>>>> b6f32ac850cf5a1a0fbffd05dcf4e1a44df2ec6e
 #include "USARTn.h"
 #include "AM2302.h"
 
