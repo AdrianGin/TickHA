@@ -329,7 +329,6 @@ void nRF24L01_Init(nRF24L01_t* dev)
 	//Use 5 byte addresses
 	data = 0x03;
 	nRF24L01_WriteVerifyRegister(dev, SETUP_AW, data);
-
 	nRF24L01_WriteVerifyRegister(dev, RF_CH, dev->rfChannel);
 
 	nRF24L01_WriteData(dev, FLUSH_TX, NULL, 0);
@@ -351,6 +350,8 @@ void nRF24L01_Init(nRF24L01_t* dev)
 	data = (0x00 << RF_DR_LOW) | (0x00 << RF_DR_HIGH) | (0x03 << RF_PWR);
 	nRF24L01_WriteVerifyRegister(dev, RF_SETUP, data);
 
+
+	nRF24L01_WriteRegister(dev, RX_ADDR_P1, dev->local_address, 5);
 
 
 }
