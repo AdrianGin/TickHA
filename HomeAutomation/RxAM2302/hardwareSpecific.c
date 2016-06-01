@@ -6,7 +6,7 @@
 nRF24L01_t nRF24L01_Device = {
 
 		.rfChannel = 1,
-		.local_address = {0x00, 0x00, 0x00, 0x00, 0x02},
+		.local_address = {0xE8,0xE8,0xE8,0xE8,0xE8},
 
 		.IOInit   = &nRF24_Init,
 		.SPIRead  = &SPI_RxByte,
@@ -51,7 +51,7 @@ void nRF24_Init(void)
 	nRF24_CSN_DDR |= (1 << nRF24_CSN_PIN);
 	nRF24_IRQ_DDR &= ~(1 << nRF24_IRQ_PIN);
 
-	nRF24_CE_PORT  &= ~(1<<nRF24_CE_PIN);
+	nRF24_CE_PORT  |= (1<<nRF24_CE_PIN);
 	nRF24_CSN_PORT |= (1<<nRF24_CSN_PIN);
 	nRF24_IRQ_PORT |= (1 << nRF24_IRQ_PIN);
 

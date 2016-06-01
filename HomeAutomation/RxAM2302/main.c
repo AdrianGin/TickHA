@@ -4,8 +4,11 @@
 #include "AM2302.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "hardwareSpecific.h"
+
+#include "debug.h"
 
 #define DEBUG_LED_DDR (DDRB)
 #define DEBUG_LED (PORTB)
@@ -20,7 +23,9 @@ int main(void)
 {
 
 	char outputString[5];
+	uint8_t receiveBuffer[64];
 
+	memset(receiveBuffer, 0, 64);
 
 	clock_prescale_set(clock_div_1);
 	DEBUG_LED_DDR |= (DEBUG_LED_PIN);				//Set B1 to output for dbg LED
@@ -39,16 +44,23 @@ int main(void)
 	nRF24L01_Init(&nRF24L01_Device);
 	nRF24L01_SetAckState(&nRF24L01_Device , 1);
 
+
 	uint8_t payload_len = 1;
 	nRF24L01_WriteRegister(&nRF24L01_Device, RX_PW_P1, &payload_len, 1);
 
-	uint8_t dest_Address[] = {0xE8,0xE8,0xE8,0xE8,0xE8};
+	nRF24L01_Listen(&nRF24L01_Device, &nRF24L01_Device.local_address[0]);
+
 
 	while(1)
 	{
+		nRF24L01_MainService(&nRF24L01_Device);
+		if( nRF24L01_IsDataReady(&nRF24L01_Device) )
+		{
+			uint8_t bytesRxed = 0;
+			bytesRxed = nRF24L01_GetData(&nRF24L01_Device, receiveBuffer);
+			LOG_PRINT_HEXDUMP(LOG_INFO, "Received: ", receiveBuffer, bytesRxed);
+		}
 
-		nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], "Hello", 1 );
-		nRF24L01_TransferSync(&nRF24L01_Device);
 		//Perform a double blink to indicate it is working
 		DEBUG_LED |= (DEBUG_LED_PIN);
 		_delay_ms(1000);

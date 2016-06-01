@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include "nrf24.h"
 
+#include <avr/power.h>
+
 //===================
 // Node Addressing
 //===================
@@ -50,12 +52,15 @@ char read_nodeAddress()
 
 
 #define DEBUG_LED (PORTB)
-#define DEBUG_LED_PIN (1<<1)
+#define DEBUG_LED_PIN (1<<0)
 #define INPUT_SWITCH (PINC)
 #define INPUT_SWITCH_PIN (1<<2)
 
 int main(void)
 {
+
+	clock_prescale_set(clock_div_1);
+
 	nrf24_init();
 	nrf24_config(1,1);	//Channel, payload length
 	
@@ -63,8 +68,8 @@ int main(void)
 	uint8_t data[1];	//Create data container for incoming commands
 	data[0] = 0;
 	
-	uint8_t tx_address[5] = {0xD8,0xD8,0xD8,0xD8,0xD8};
-	nrf24_tx_address(tx_address);
+	//uint8_t tx_address[5] = {0xD8,0xD8,0xD8,0xD8,0xD8};
+	//nrf24_tx_address(tx_address);
 
 	uint8_t rx_address[5] = {0xE8,0xE8,0xE8,0xE8,0xE8};
 	nrf24_rx_address(rx_address);

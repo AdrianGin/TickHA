@@ -16,9 +16,11 @@ typedef enum
 
 typedef enum
 {
-	NRF24_IDLE = 0, //Standby I Mode
+	NRF24_STANDBY1 = 0, //Standby I Mode
 	NRF24_TRANSMITTING,
 	NRF24_RECEIVING,
+
+	NRF24_DATA_RECEIVED,
 
 	NRF24_TRANSMIT_ERROR,
 	NRF24_RECEIVE_ERROR,
@@ -31,6 +33,8 @@ typedef enum
 #define CE_TX (1)
 #define CE_RX (0)
 
+#define CE_ENABLE (1)
+#define CE_DISABLE (0)
 
 typedef struct nRF24L01_t nRF24L01_t;
 struct nRF24L01_t
@@ -67,6 +71,8 @@ void nRF24L01_Init(nRF24L01_t* dev);
 uint8_t nRF24L01_WriteData(nRF24L01_t* dev, uint8_t cmd, uint8_t* data, uint8_t n);
 uint8_t nRF24L01_ReadData(nRF24L01_t* dev , uint8_t cmd, uint8_t* data, uint8_t n);
 
+uint8_t nRF24L01_Listen(nRF24L01_t* dev, uint8_t* address);
+
 void nRF24L01_SetupTransmit(nRF24L01_t* dev, uint8_t* address, uint8_t* payload, uint16_t n);
 uint8_t nRF24L01_Transmit(nRF24L01_t* dev, uint8_t* address, uint8_t* payload, uint16_t n);
 
@@ -77,6 +83,11 @@ uint8_t nRF24L01_MainService(nRF24L01_t* dev);
 
 void nRF24L01_PowerDown(nRF24L01_t* dev);
 
+
+uint8_t nRF24L01_IsDataReady(nRF24L01_t* dev);
+
+//Returns number of bytes received
+uint8_t nRF24L01_GetData(nRF24L01_t* dev, uint8_t* buff);
 
 static inline void nRF24L01_SetAckState(nRF24L01_t* dev, uint8_t state)
 {
@@ -104,22 +115,6 @@ static inline void NRF24_DESELECT(nRF24L01_t* dev)
 	dev->ChipSelect(1);
 }
 
-static inline void NRF24_RXMODE(nRF24L01_t* dev)
-{
-	dev->ChipEnable(CE_RX);
-}
 
-static inline void NRF24_TXMODE(nRF24L01_t* dev)
-{
-	dev->ChipEnable(CE_TX);
-}
-
-
-static inline void NRF24_CE_PULSE(nRF24L01_t* dev)
-{
-	dev->ChipEnable(CE_TX);
-	_delay_us(11);
-	dev->ChipEnable(CE_RX);
-}
 
 #endif

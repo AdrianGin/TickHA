@@ -18,23 +18,22 @@
 /* ------------------------------------------------------------------------- */
 void nrf24_setupPins()
 {
-    set_bit(DDRB,2); // CE output
-    set_bit(DDRC,0); // CSN output
+    set_bit(DDRD,7); // CE output
+    set_bit(DDRD,6); // CSN output
     set_bit(DDRB,5); // SCK output
     set_bit(DDRB,3); // MOSI output
     clr_bit(DDRB,4); // MISO input
-	set_bit(DDRB,0); // SS output
 }
 /* ------------------------------------------------------------------------- */
 void nrf24_ce_digitalWrite(uint8_t state)
 {
     if(state)
     {
-        set_bit(PORTB,2);
+        set_bit(PORTD,7);
     }
     else
     {
-        clr_bit(PORTB,2);
+        clr_bit(PORTD,7);
     }
 }
 /* ------------------------------------------------------------------------- */
@@ -42,11 +41,11 @@ void nrf24_csn_digitalWrite(uint8_t state)
 {
     if(state)
     {
-        set_bit(PORTC,0);
+        set_bit(PORTD,6);
     }
     else
     {
-        clr_bit(PORTC,0);
+        clr_bit(PORTD,6);
     }
 }
 /* ------------------------------------------------------------------------- */

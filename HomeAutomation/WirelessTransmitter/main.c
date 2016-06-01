@@ -23,7 +23,7 @@
 //TODO: Disable ADC
 
 #define DEBUG_LED (PORTB)
-#define DEBUG_LED_PIN (1<<1)
+#define DEBUG_LED_PIN (1<<0)
 #define INPUT_SWITCH (PINC)
 #define INPUT_SWITCH_PIN (1<<2)
 #define INPUT_SWITCH_PIN2 (1<<3)
@@ -31,7 +31,7 @@
 int main(void)
 {
 
-	//clock_prescale_set(clock_div_1);
+	clock_prescale_set(clock_div_1);
 
 	nrf24_init();
 	nrf24_config(1,1);	//Channel, payload length
