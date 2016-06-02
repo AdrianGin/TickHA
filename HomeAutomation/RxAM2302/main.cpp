@@ -13,10 +13,6 @@
 
 AVR::GPIO DebugLED = AVR::GPIO(DDRB, PORTB, PINB, 0);
 
-#define INPUT_SWITCH (PINC)
-#define INPUT_SWITCH_PIN (1<<2)
-#define INPUT_SWITCH_PIN2 (1<<3)
-
 AVR::GPIO SCK = AVR::GPIO(DDRB, PORTB, PINB, PB5);
 AVR::GPIO MISO = AVR::GPIO(DDRB, PORTB, PINB, PB4);
 AVR::GPIO MOSI = AVR::GPIO(DDRB, PORTB, PINB, PB3);
@@ -66,6 +62,7 @@ int main(void)
 
 	WirelessDev.Listen(&my_Address[0]);
 
+	uint8_t packetCount = 0;
 
 	while(1)
 	{
@@ -86,7 +83,14 @@ int main(void)
 			}
 
 			USARTn_TxString(&USART0, (char*)receiveBuffer);
+			packetCount++;
+		}
 
+		if( packetCount >= 2 )
+		{
+			LOG_PRINT_DEC(LOG_INFO, "CurrentLED: ", DebugLED.currentlevel );
+			DebugLED.SetOutput( (Devices::GPIO::LogicLevel)(DebugLED.currentlevel ^ 1) );
+			packetCount = 0;
 		}
 
 	}
