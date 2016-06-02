@@ -16,24 +16,22 @@
 #include "AM2302.h"
 #include "nRF24L01.h"
 
-extern nRF24L01_t nRF24L01_Device;
-extern AM2302_t AM2302_Device;
+#include <util/delay_basic.h>
 
-
+/*
 #define SPI_DDR   (DDRB)
 #define SPI_PORT  (PORTB)
 #define SCK       (PB5)
 #define MISO      (PB4)
 #define MOSI      (PB3)
-#define nSS       (PB2)
+#define nSS       (PB2)*/
 
+//It is important that this is very accurate or we get parity errors.
+static inline void Delay_us(uint16_t us)
+{
+	 _delay_loop_2(us * (uint16_t)(F_CPU / 4e6) );
+}
 
-void nRF24_Init(void);
-void nRF24_SetCS(uint8_t state);
-void nRF24_SetCE(uint8_t state);
-uint8_t nRF24_GetIRQ(void);
-
-void nRF24_IRQCallback(nRF24L01_t* dev);
 
 
 #endif

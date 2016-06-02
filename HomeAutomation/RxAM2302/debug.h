@@ -1,10 +1,6 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 #include <stdlib.h>
 #include "USARTn.h"
@@ -42,10 +38,6 @@ void log_print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16_
 #define LOG_PRINT_HEXDUMP(level, string, ptr, num) ((void)0)
 
 
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 

@@ -1,19 +1,19 @@
 
 
 #include <stdint.h>
-#include "AM2302.h"
+#include "ISL2561.h"
 
-#include "USARTn.h"
+
 
 //Sets up port as output high, ready for request.
-void AM2302_Init(AM2302_t* dev)
+void ISL2561_Init(ISL2561_t* dev)
 {
 	*dev->pin_out_reg |= (1 << (dev->pin_index));
 	*dev->pin_dir_reg |= (1 << (dev->pin_index));
 }
 
 
-uint8_t AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
+uint8_t ISL2561_WaitState(ISL2561_t* dev, uint8_t bitstate)
 {
 	for( uint8_t retry = 255; retry != 0; --retry )
 	{
@@ -21,7 +21,7 @@ uint8_t AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
 		{
 			return 0;
 		}
-		AM2302_Delay_us(10);
+		ISL2561_Delay_us(10);
 	}
 
 	return 1;
@@ -29,24 +29,24 @@ uint8_t AM2302_WaitState(AM2302_t* dev, uint8_t bitstate)
 
 //Sends a start signal of 1ms low, followed by a bus release,
 //Waits for 100us and waits for pin to go low. (Should be after 180us)
-uint8_t AM2302_RequestData(AM2302_t* dev)
+uint8_t ISL2561_RequestData(ISL2561_t* dev)
 {
 	uint8_t connectionError = 0;
 
-	AM2302_Init(dev);
+	ISL2561_Init(dev);
 
 	*dev->pin_out_reg &= ~(1<<dev->pin_index);
-	AM2302_Delay_us(1000);
+	ISL2561_Delay_us(1000);
 	*dev->pin_out_reg |= (1<<dev->pin_index);
 
 	//Release bus
 	*dev->pin_dir_reg &= ~(1 << (dev->pin_index));
 
-	connectionError += AM2302_WaitState(dev, 1);
-	connectionError += AM2302_WaitState(dev, 0);
+	connectionError += ISL2561_WaitState(dev, 1);
+	connectionError += ISL2561_WaitState(dev, 0);
 
-	connectionError += AM2302_WaitState(dev, 1);
-	connectionError += AM2302_WaitState(dev, 0);
+	connectionError += ISL2561_WaitState(dev, 1);
+	connectionError += ISL2561_WaitState(dev, 0);
 
 	uint16_t humidity = 0;
 	uint16_t temperature = 0;
@@ -55,21 +55,21 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 	for( uint8_t i = 0; i < 16; ++i)
 	{
 		humidity = humidity << 1;
-		humidity |= AM2302_GetBit(dev);
+		humidity |= ISL2561_GetBit(dev);
 
 	}
 
 	for( uint8_t i = 0; i < 16; ++i)
 	{
 		temperature = temperature << 1;
-		temperature |= AM2302_GetBit(dev);
+		temperature |= ISL2561_GetBit(dev);
 
 	}
 
 	for( uint8_t i = 0; i < 8; ++i)
 	{
 		parity = parity << 1;
-		parity |= AM2302_GetBit(dev);
+		parity |= ISL2561_GetBit(dev);
 	}
 
 	uint8_t calculatedParity = ((humidity & 0xFF00) >> 8) + (humidity & 0xFF) + \
@@ -79,7 +79,7 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 
 	if( connectionError )
 	{
-		return AM2302_ERR_CONNECTION;
+		return ISL2561_ERR_CONNECTION;
 	}
 
 	if( parity == calculatedParity )
@@ -91,7 +91,7 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 	}
 	else
 	{
-		return AM2302_ERR_PARITY;
+		return ISL2561_ERR_PARITY;
 	}
 }
 
@@ -99,13 +99,13 @@ uint8_t AM2302_RequestData(AM2302_t* dev)
 
 
 
-uint8_t AM2302_GetBit(AM2302_t* dev)
+uint8_t ISL2561_GetBit(ISL2561_t* dev)
 {
 
 	uint8_t bitval;
-	AM2302_WaitState(dev, 0);
-	AM2302_WaitState(dev, 1);
-	AM2302_Delay_us(30);
+	ISL2561_WaitState(dev, 0);
+	ISL2561_WaitState(dev, 1);
+	ISL2561_Delay_us(30);
 
 	bitval = (*dev->pin_in_reg & (1 << (dev->pin_index)) );
 
@@ -114,20 +114,20 @@ uint8_t AM2302_GetBit(AM2302_t* dev)
 }
 
 
-uint16_t AM2302_GetRawTemperature(AM2302_t* dev)
+uint16_t ISL2561_GetRawTemperature(ISL2561_t* dev)
 {
 	return dev->temperature;
 }
 
-uint16_t AM2302_GetRawHumidity(AM2302_t* dev)
+uint16_t ISL2561_GetRawHumidity(ISL2561_t* dev)
 {
 	return dev->humidity;
 }
 
 
-int8_t AM2302_GetTemperature(AM2302_t* dev)
+int8_t ISL2561_GetTemperature(ISL2561_t* dev)
 {
-	if( dev->temperature & AM2302_TEMPSIGN_BIT )
+	if( dev->temperature & ISL2561_TEMPSIGN_BIT )
 	{
 		return -(dev->temperature / 10);
 	}
@@ -135,7 +135,7 @@ int8_t AM2302_GetTemperature(AM2302_t* dev)
 	return (dev->temperature / 10);
 }
 
-int8_t AM2302_GetHumidity(AM2302_t* dev)
+int8_t ISL2561_GetHumidity(ISL2561_t* dev)
 {
 	return dev->humidity / 10;
 }

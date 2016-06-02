@@ -27,7 +27,7 @@
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1665165259" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
 									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
-									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="DEBUG"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1394726085" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p -ffunction-sections" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.642447162" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
@@ -43,11 +43,11 @@
 								<option id="gnu.cpp.compiler.option.optimization.level.1509884679" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.size" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.2083500632" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.163234670" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
 									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
-									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.1003260305" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.1003260305" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections -fno-exceptions -fno-rtti" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1303174898" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Util}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Devices}&quot;"/>
