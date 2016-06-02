@@ -32,6 +32,9 @@
 #ifndef _HARDUART_ROUTINES
 #define	_HARDUART_ROUTINES
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -209,5 +212,9 @@ void USARTn_TxDump(USARTn_t* uart, uint8_t* buffer, uint8_t nbytes );
 //ISR(SIG_UART_RECV);
 
 void USARTn_NewLine(USARTn_t* uart);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

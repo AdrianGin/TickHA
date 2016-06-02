@@ -45,7 +45,7 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.163234670" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__AVR_ATmega328P__"/>
 									<listOptionValue builtIn="false" value="F_CPU=8000000UL"/>
-									<listOptionValue builtIn="false" value="DEBUG"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1003260305" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -mmcu=atmega328p  -ffunction-sections" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1303174898" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
@@ -54,6 +54,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/AVR}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
 								</option>
+								<option id="gnu.cpp.compiler.option.dialect.std.1020448317" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.cpp.compiler.dialect.c++11" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.688917285" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.900183792" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
@@ -83,7 +84,7 @@
 					<sourceEntries>
 						<entry excluding="Util|AVR|Devices" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry excluding="USARTn_example.c|USARTn/example.c|UART/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="AVR"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
+						<entry excluding="ISL2561.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Devices"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Util"/>
 					</sourceEntries>
 				</configuration>

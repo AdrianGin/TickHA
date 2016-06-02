@@ -6,6 +6,7 @@
 #include "AM2302.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "hardwareSpecific.h"
 
@@ -40,6 +41,7 @@ int main(void)
 	_delay_ms(100);
 
 	SPI_Init();
+
 	nRF24L01_Init(&nRF24L01_Device);
 	nRF24L01_SetAckState(&nRF24L01_Device , 1);
 
@@ -54,7 +56,7 @@ int main(void)
 		uint8_t err = AM2302_RequestData(&AM2302_Device);
 		if( rxFlag )
 		{
-			nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], &rxChar, 1);
+			nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], (uint8_t*)&rxChar, 1);
 			nRF24L01_TransferSync(&nRF24L01_Device);
 			rxFlag = 0;
 		}
@@ -78,8 +80,8 @@ int main(void)
 
 			default:
 				{
-					uint8_t humidityStr[25] = "The humidity is: ";
-					uint8_t tempStr[25] = "The temperature is: ";
+					char humidityStr[25] = "The humidity is: ";
+					char tempStr[25] = "The temperature is: ";
 
 					USARTn_TxString(&USART0, (humidityStr));
 					itoa( AM2302_GetHumidity(&AM2302_Device), &outputString[0], 10);
@@ -88,7 +90,7 @@ int main(void)
 
 					strcat(humidityStr, outputString);
 					strncat(humidityStr, "\n", 2);
-					nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], humidityStr, strlen(humidityStr)+1);
+					nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], (uint8_t*)humidityStr, strlen(humidityStr)+1);
 					nRF24L01_TransferSync(&nRF24L01_Device);
 
 					USARTn_TxString(&USART0, (tempStr));
@@ -100,7 +102,7 @@ int main(void)
 
 					strcat(tempStr, outputString);
 					strncat(tempStr, "\n", 2);
-					nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], tempStr, strlen(tempStr)+1);
+					nRF24L01_Transmit(&nRF24L01_Device, &dest_Address[0], (uint8_t*)tempStr, strlen(tempStr)+1);
 					nRF24L01_TransferSync(&nRF24L01_Device);
 
 					break;

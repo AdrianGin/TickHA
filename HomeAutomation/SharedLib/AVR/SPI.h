@@ -50,6 +50,11 @@ THE SOFTWARE.
 
 #ifndef	_SPI_ROUTINES
 #define	_SPI_ROUTINES
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
  
 /* SPI Interface, these should be defined in hardwareSpecific.h */
 /*
@@ -78,5 +83,11 @@ uint8_t SPI_RxByte(void);
 void SPI_RxBlock(uint8_t* data, uint8_t n);
 
 void SPI_TxBlock(uint8_t* data, uint8_t n);
+
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

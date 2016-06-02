@@ -1,6 +1,11 @@
 #ifndef _DEBUG_H
 #define _DEBUG_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdlib.h>
 #include "USARTn.h"
 
@@ -14,10 +19,7 @@ enum
 } ;
 
 void log_print_trace(uint8_t loglevel, const char* file, const char* function, int line);
-
-
 void log_print(uint8_t loglevel, char* string);
-
 // Prints out the string followed by a number in decimal
 void log_print_dec(uint8_t loglevel, char* string, uint16_t dec);
 // Prints out the string followed by a number in hex
@@ -41,6 +43,11 @@ void log_print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16_
 
 
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+
 
 
 #endif

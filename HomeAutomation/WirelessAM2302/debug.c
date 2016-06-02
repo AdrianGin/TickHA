@@ -4,13 +4,10 @@
 #include "debug.h"
 
 
-
 #ifndef NDEBUG
 
 
-
 uint8_t DebugLevel = LOG_DEBUG;
-
 
 
 // Prints out the string
@@ -90,5 +87,18 @@ void log_print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16_
 		USARTn_NewLine(&USART0);
 	}
 }
+
+#else
+
+void log_print_trace(uint8_t loglevel, const char* file, const char* function, int line) {}
+void log_print(uint8_t loglevel, char* string) {}
+// Prints out the string followed by a number in decimal
+void log_print_dec(uint8_t loglevel, char* string, uint16_t dec) {}
+// Prints out the string followed by a number in hex
+void log_print_hex(uint8_t loglevel, char* string, uint16_t hex) {}
+// Prints out the string followed by a set of numbers in hex
+void log_print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16_t n) {}
+
+
 
 #endif
