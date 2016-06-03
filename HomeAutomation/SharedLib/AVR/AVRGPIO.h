@@ -26,7 +26,6 @@ THE SOFTWARE.
 #define _AVR_GPIO_H
 
 
-#include "AVRGPIO.h"
 #include "GPIO.h"
 #include <stdint.h>
 

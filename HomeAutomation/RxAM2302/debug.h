@@ -30,14 +30,29 @@ THE SOFTWARE.
 #include <stdlib.h>
 #include "USARTn.h"
 
-enum
+
+class DebugLog
 {
-	LOG_DEBUG = 0,
-	LOG_INFO,
-	LOG_WARN,
-	LOG_ERR,
-	LOG_FATAL,
-} ;
+
+public:
+	enum
+	{
+		DEBUG = 0,
+		INFO,
+		WARN,
+		ERR,
+		FATAL,
+	} ;
+
+
+private:
+
+
+
+
+};
+
+
 
 void log_print_trace(uint8_t loglevel, const char* file, const char* function, int line);
 void log_print(uint8_t loglevel, char* string);

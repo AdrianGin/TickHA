@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 
 
-
+#include <avr/io.h>
 #include "AVRGPIO.h"
 #include "GPIO.h"
 
@@ -43,6 +43,7 @@ void GPIO::Init( Direction dir )
 {
 	if( dir == INPUT )
 	{
+
 		DDR &= ~(1 << pinNumber);
 	}
 	else
@@ -59,14 +60,7 @@ void GPIO::SetOutput( LogicLevel level)
 		return;
 	}
 
-	if( level == LOW )
-	{
-		PORT &= ~(1 << pinNumber);
-	}
-	else
-	{
-		PORT |= (1 << pinNumber);
-	}
+	PIN = (1<<pinNumber);
 	currentlevel = level;
 }
 

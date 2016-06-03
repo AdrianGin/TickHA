@@ -1,3 +1,28 @@
+/*
+
+Copyright (c) 2016 Adrian Gin (adrian.gin[at]gmail.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+*/
+
+
 #include <avr/io.h>
 #include <stdint.h>
 #include <util/delay.h>
@@ -8,6 +33,8 @@
 #include "USARTn.h"
 #include "AM2302.h"
 
+
+#include "AVRGPIO.h"
 #include <stdlib.h>
 
 #define DEBUG_LED (PORTD)
@@ -16,17 +43,8 @@
 #define INPUT_SWITCH_PIN (1<<2)
 #define INPUT_SWITCH_PIN2 (1<<3)
 
-AM2302_t AM2302_Device = {
-	.pin_dir_reg = &DDRC,
-	.pin_out_reg = &PORTC,
-	.pin_in_reg  = &PINC,
-
-	.pin_index  = PC5,
-
-
-
-};
-
+AVR::GPIO AM2302IO = AVR::GPIO(DDRC, PORTC, PINC, PC5);
+Devices::AM2302   ThermSensor = Devices::AM2302(AM2302IO, Delay_us);
 
 int main(void)
 {
