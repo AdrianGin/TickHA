@@ -78,7 +78,7 @@ volatile uint8_t rxFlag = 0;
 
 int main(void)
 {
-	char outputString[5];
+	char outputString[20];
 
 	clock_prescale_set(clock_div_1);
 	DebugLED.Init( Devices::GPIO::OUTPUT );
@@ -100,8 +100,23 @@ int main(void)
 
 	uint8_t dest_Address[] = {0xE8,0xE8,0xE8,0xE8,0xE8};
 	uint16_t lux;
+
+	char header[] = ("Lux\tHumidity\tTemperature");
+
+	USART0.tx( header );
+	WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, strlen(header)+1);
+	WirelessDev.TransferSync();
+
+	header[0] = '\r';
+	header[1] = '\n';
+	header[2] = '\0';
+
 	while(1)
 	{
+		USART0.tx( header );
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, 3);
+		WirelessDev.TransferSync();
+
 		WirelessDev.MainService();
 		//Perform a double blink to indicate it is working
 
@@ -113,18 +128,16 @@ int main(void)
 			rxFlag = 0;
 		}
 
-
-
 		DebugLED.SetOutput( Devices::GPIO::HIGH );
 		_delay_ms(1000);
 		DebugLED.SetOutput( Devices::GPIO::LOW);
 		_delay_ms(1000);
 
-
-		USART0.tx((char*)"Lux Level : ");
 		itoa(  LightSensor.GetLuxLevel(), &outputString[0], 10);
 		USART0.tx(outputString);
-		USART0.tx_newline();
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
+		WirelessDev.TransferSync();
+
 
 		switch( err )
 		{
@@ -140,29 +153,15 @@ int main(void)
 
 			default:
 				{
-					char humidityStr[25] = "The humidity is: ";
-					char tempStr[25] = "The temperature is: ";
-
-					USART0.tx((humidityStr));
-					itoa( ThermSensor.GetHumidity(), &outputString[0], 10);
+					outputString[0] = '\t';
+					itoa( ThermSensor.GetRawHumidity(), &outputString[1], 10);
 					USART0.tx(outputString);
-					USART0.tx_newline();
-
-					strcat(humidityStr, outputString);
-					strncat(humidityStr, "\n", 2);
-					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)humidityStr, strlen(humidityStr)+1);
+					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
 					WirelessDev.TransferSync();
 
-					USART0.tx((tempStr));
-					itoa( ThermSensor.GetTemperature(), &outputString[0], 10);
+					itoa( ThermSensor.GetRawTemperature(), &outputString[1], 10);
 					USART0.tx(outputString);
-
-					USART0.tx_newline();;
-					USART0.tx_newline();
-
-					strcat(tempStr, outputString);
-					strncat(tempStr, "\n", 2);
-					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)tempStr, strlen(tempStr)+1);
+					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
 					WirelessDev.TransferSync();
 
 					break;
