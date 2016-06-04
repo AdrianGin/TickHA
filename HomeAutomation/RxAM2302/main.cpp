@@ -71,15 +71,15 @@ int main(void)
 		{
 			uint8_t bytesRxed = 0;
 			bytesRxed = WirelessDev.GetData(receiveBuffer);
-			LOG_PRINT_DEC(LOG_INFO, "Rx Count: ", bytesRxed);
+			LOG_PRINT_DEC(API::Log::INFO, "Rx Count: ", bytesRxed);
 			if( bytesRxed == 1 )
 			{
 				receiveBuffer[1] = 0;
-				LOG_PRINT(LOG_INFO, (char*)receiveBuffer);
+				LOG_PRINT(API::Log::INFO, (char*)receiveBuffer);
 			}
 			else
 			{
-				LOG_PRINT_HEXDUMP(LOG_INFO, "Received: ", receiveBuffer, bytesRxed);
+				LOG_PRINT_HEXDUMP(API::Log::INFO, "Received: ", receiveBuffer, bytesRxed);
 			}
 
 			USARTn_TxString(&USART0, (char*)receiveBuffer);
@@ -88,7 +88,7 @@ int main(void)
 
 		if( packetCount >= 2 )
 		{
-			LOG_PRINT_DEC(LOG_INFO, "CurrentLED: ", DebugLED.currentlevel );
+			LOG_PRINT_DEC(API::Log::INFO, "CurrentLED: ", DebugLED.currentlevel );
 			DebugLED.SetOutput( (Devices::GPIO::LogicLevel)(DebugLED.currentlevel ^ 1) );
 			packetCount = 0;
 		}

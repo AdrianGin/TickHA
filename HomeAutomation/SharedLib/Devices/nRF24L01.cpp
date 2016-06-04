@@ -121,7 +121,7 @@ uint8_t nRF24L01::Listen(uint8_t* address)
 
 		uint8_t debugAddr[5];
 		nRF24L01::ReadRegister(RX_ADDR_P1, &debugAddr[0], 5);
-		LOG_PRINT_HEXDUMP(LOG_DEBUG, "Listening on: ", debugAddr, 5);
+		LOG_PRINT_HEXDUMP( API::Log::DEBUG, "Listening on: ", debugAddr, 5);
 
 		return SUCCESS;
 	}
@@ -197,7 +197,7 @@ uint8_t nRF24L01::MainService()
 					}
 					else
 					{
-						LOG_PRINT(LOG_DEBUG, "Tx Complete");
+						LOG_PRINT(API::Log::DEBUG, "Tx Complete");
 						//Exit transmit mode Standby II back to Standby I
 						ChipDisable();
 						state = STANDBY1;
@@ -212,7 +212,7 @@ uint8_t nRF24L01::MainService()
 
 					ChipDisable();
 
-					LOG_PRINT(LOG_ERR, "Max Retries exceeded");
+					LOG_PRINT(API::Log::ERR, "Max Retries exceeded");
 					//Write 1 to Clear Max Retries INT to show we have handled it.
 					statusByte |= (1<<MAX_RT);
 					nRF24L01::WriteRegister(STATUS, &statusByte, 1);
@@ -223,7 +223,7 @@ uint8_t nRF24L01::MainService()
 
 					uint8_t configState;
 					nRF24L01::ReadRegister(CONFIG, &configState , 1);
-					LOG_PRINT_HEX(LOG_DEBUG, "Config: ", configState);
+					LOG_PRINT_HEX( API::Log::DEBUG, "Config: ", configState);
 
 
 					nRF24L01::WriteData(FLUSH_TX, NULL, 0);
@@ -239,7 +239,7 @@ uint8_t nRF24L01::MainService()
 				statusByte = nRF24L01::ReadRegister(NOP, NULL , 0);
 				if( statusByte & (1<<RX_DR))
 				{
-					LOG_PRINT(LOG_DEBUG, "Packet Received");
+					LOG_PRINT( API::Log::DEBUG, "Packet Received");
 					//Write 1 to Clear Max Retries INT to show we have handled it.
 					statusByte |= (1<<RX_DR);
 					nRF24L01::WriteRegister(STATUS, &statusByte, 1);
@@ -295,11 +295,11 @@ uint8_t nRF24L01::GetData(uint8_t* buff)
 	while( IsDataReady() )
 	{
 		nRF24L01::ReadData(R_RX_PL_WID, &payloadLength , 1);
-		LOG_PRINT_DEC(LOG_DEBUG, "Rx Count: ", payloadLength);
+		LOG_PRINT_DEC(API::Log::DEBUG, "Rx Count: ", payloadLength);
 
 		if( payloadLength > FIFO_SIZE )
 		{
-			LOG_PRINT(LOG_ERR, "DPL error");
+			LOG_PRINT(API::Log::ERR, "DPL error");
 			nRF24L01::WriteData(FLUSH_RX, NULL, 0);
 		}
 
@@ -333,7 +333,7 @@ void nRF24L01::TransmitPayload()
 
 	if( state != TRANSMITTING )
 	{
-		LOG_PRINT(LOG_ERR, "Not Ready");
+		LOG_PRINT(API::Log::ERR, "Not Ready");
 		return;
 	}
 
@@ -354,12 +354,12 @@ void nRF24L01::TransmitPayload()
 				nRF24L01::WriteRegister(writeTxPayloadRegister, &tx_payload[tx_payloadIndex], bytesToSend);
 				tx_payloadIndex += bytesToSend;
 				bytesRemaining = tx_payloadSize - tx_payloadIndex;
-				LOG_PRINT_DEC(LOG_DEBUG, "FIFO Write Size: ", bytesToSend);
+				LOG_PRINT_DEC(API::Log::DEBUG, "FIFO Write Size: ", bytesToSend);
 
 			}
 			else
 			{
-				LOG_PRINT(LOG_ERR, "TX FIFO Full");
+				LOG_PRINT( API::Log::ERR, "TX FIFO Full");
 			}
 		}
 	}
@@ -384,8 +384,8 @@ void nRF24L01::WriteVerifyRegister(uint8_t cmd, uint8_t data)
 	nRF24L01::ReadRegister(cmd, &dataVerify, 1);
 	if( data != dataVerify )
 	{
-		LOG_PRINT_HEX(LOG_ERR, "Verification Error = ", dataVerify);
-		LOG_PRINT_HEX(LOG_ERR, "Expected = ", data);
+		LOG_PRINT_HEX( API::Log::ERR, "Verification Error = ", dataVerify);
+		LOG_PRINT_HEX( API::Log::ERR, "Expected = ", data);
 	}
 }
 
@@ -408,7 +408,7 @@ uint8_t nRF24L01::ReadData(uint8_t cmd, uint8_t* data, uint8_t n)
 
 	Select();
 	statusByte = SPIPort.TxByte(cmd);
-	LOG_PRINT_DEC(LOG_DEBUG, "STA: ", statusByte);
+	LOG_PRINT_DEC( API::Log::DEBUG, "STA: ", statusByte);
 
 	SPIPort.RxBlock(data, n);
 	Deselect();

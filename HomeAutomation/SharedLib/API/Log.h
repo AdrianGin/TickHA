@@ -23,55 +23,56 @@ THE SOFTWARE.
 */
 
 
+#ifndef _API_LOG_H
+#define _API_LOG_H
 
-#include <avr/io.h>
-#include "AVRGPIO.h"
-#include "GPIO.h"
+#include <stdlib.h>
+#include "Terminal.h"
 
-using Devices::GPIO;
 
-namespace AVR
+namespace API
 {
 
-GPIO::GPIO(volatile uint8_t& DDR, volatile uint8_t& PORT, volatile uint8_t& PIN, uint8_t pn) noexcept:
-		DDR(DDR), PORT(PORT), PIN(PIN), pinNumber(pn)
+class Log
 {
 
-}
-
-void GPIO::Init( Direction dir )
-{
-	if( dir == INPUT )
+public:
+	enum
 	{
+		DEBUG = 0,
+		INFO,
+		WARN,
+		ERR,
+		FATAL,
+	} ;
 
-		DDR &= ~(1 << pinNumber);
-	}
-	else
-	{
-		DDR |= (1 << pinNumber);
-	}
-	currentDirection = dir;
+	Log(void) noexcept;
+	//Log(Devices::Terminal& term) noexcept;
+
+	void print_trace(uint8_t loglevel, const char* file, const char* function, int line);
+	void print(uint8_t loglevel, char* string);
+	// Prints out the string followed by a number in decimal
+	void print_dec(uint8_t loglevel, char* string, uint16_t dec);
+	// Prints out the string followed by a number in hex
+	void print_hex(uint8_t loglevel, char* string, uint16_t hex);
+	// Prints out the string followed by a set of numbers in hex
+	void print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16_t n);
+
+private:
+
+	//Devices::Terminal& term;
+
+
+};
+
+
+
+
+
+
+
 }
 
-void GPIO::SetOutput( LogicLevel level)
-{
-	if( level == currentlevel )
-	{
-		return;
-	}
 
 
-
-
-	PIN = (1<<pinNumber);
-	currentlevel = level;
-}
-
-
-uint8_t GPIO::ReadInput(void)
-{
-
-	return (PIN & (1<<pinNumber)) ? 1 : 0;
-}
-
-}
+#endif

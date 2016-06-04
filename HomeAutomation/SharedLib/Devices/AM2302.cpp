@@ -137,11 +137,11 @@ uint8_t AM2302::RequestData(void)
 	else
 	{
 
-		LOG_PRINT_DEC(LOG_INFO, (char*)"Humidity : ", humidity);
-		LOG_PRINT_DEC(LOG_INFO, (char*)"Temperature: ", temperature);
+		LOG_PRINT_DEC( API::Log::INFO, (char*)"Humidity : ", humidity);
+		LOG_PRINT_DEC( API::Log::INFO, (char*)"Temperature: ", temperature);
 
-		LOG_PRINT_DEC(LOG_ERR,  (char*)"Parity Error Rx: ", parity);
-		LOG_PRINT_DEC(LOG_ERR,  (char*)"Expected: ", calculatedParity);
+		LOG_PRINT_DEC( API::Log::ERR,  (char*)"Parity Error Rx: ", parity);
+		LOG_PRINT_DEC( API::Log::ERR,  (char*)"Expected: ", calculatedParity);
 
 		return ERR_PARITY;
 	}
