@@ -32,13 +32,6 @@ THE SOFTWARE.
 #include <avr/power.h>
 #include <avr/pgmspace.h>
 
-#include "USARTn.h"
-#include "SPI.h"
-
-
-#include "AM2302.h"
-#include "nRF24L01.h"
-
 #include <util/delay_basic.h>
 
 //It is important that this is very accurate or we get parity errors.

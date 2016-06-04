@@ -23,32 +23,14 @@ THE SOFTWARE.
 */
 
 
-#ifndef _DEBUG_H
-#define _DEBUG_H
+#ifndef _HW_CONFIG_H
+#define _HW_CONFIG_H
+
+#include "AVRUSARTn.h"
 
 
-#include <stdlib.h>
-#include "Log.h"
+extern AVR::USARTn USART0;
 
-
-extern API::Log Log;
-
-#ifndef NDEBUG
-
-#define LOG_PRINT(level, string) Log.print_trace(level, 0, __func__, __LINE__); Log.print(level, (char*)string)
-#define LOG_PRINT_DEC(level, string, num) Log.print_trace(level, __FILE__, __func__, __LINE__); Log.print_dec(level, (char*)string, num)
-#define LOG_PRINT_HEX(level, string, num) Log.print_trace(level, __FILE__, __func__, __LINE__); Log.print_hex(level, (char*)string, num)
-#define LOG_PRINT_HEXDUMP(level, string, ptr, num) Log.print_trace(level, __FILE__, __func__, __LINE__); Log.print_hexDump(level, (char*)string, ptr, num)
-
-#else
-
-#define LOG_PRINT(level, string) ((void)0)
-#define LOG_PRINT_DEC(level, string, num) ((void)0)
-#define LOG_PRINT_HEX(level, string, num) ((void)0)
-#define LOG_PRINT_HEXDUMP(level, string, ptr, num) ((void)0)
-
-
-#endif
 
 
 #endif

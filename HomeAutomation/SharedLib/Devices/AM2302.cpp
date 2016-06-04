@@ -26,7 +26,7 @@ THE SOFTWARE.
 #include <stdint.h>
 #include "AM2302.h"
 #include "GPIO.h"
-#include "debug.h"
+#include "Log.h"
 
 
 

@@ -28,7 +28,7 @@ THE SOFTWARE.
 #include <string.h>
 #include "nRF24L01.h"
 
-#include "debug.h"
+#include "Log.h"
 
 
 namespace Devices

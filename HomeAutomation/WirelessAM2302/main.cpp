@@ -24,10 +24,10 @@ THE SOFTWARE.
 
 
 #include <avr/pgmspace.h>
+#include <AVRUSARTn.h>
 #include "AVRGPIO.h"
 #include "AVRSPI.h"
 
-#include "USARTn.h"
 #include "AM2302.h"
 #include "nRF24L01.h"
 
@@ -35,7 +35,7 @@ THE SOFTWARE.
 #include <string.h>
 
 #include "hardwareSpecific.h"
-
+#include "hw_config.h"
 
 
 #define DEBUG_LED_DDR (DDRB)
@@ -77,12 +77,9 @@ int main(void)
 	DebugLED.Init( Devices::GPIO::OUTPUT );
 	DebugLED.SetOutput( Devices::GPIO::HIGH );
 
-	USARTn_Init(&USART0, BAUD19200, FAST);
+	USART0.Init(BAUD19200);
 	/*Enable interrupts*/
 	sei();
-
-	/*Enable receive complete interrupt*/
-	*USART0.UCSRnB |= (1<<RXCIEn);
 
 	_delay_ms(100);
 
@@ -114,13 +111,13 @@ int main(void)
 		switch( err )
 		{
 			case Devices::AM2302::ERR_PARITY:
-				USARTn_TxString(&USART0, ("Parity Error"));
-				USARTn_NewLine(&USART0);
+				USART0.tx("Parity Error");
+				USART0.NewLine();
 				break;
 
 			case Devices::AM2302::ERR_CONNECTION:
-				USARTn_TxString(&USART0, ("Connection Error"));
-				USARTn_NewLine(&USART0);
+				USART0.tx("Connection Error");
+				USART0.NewLine();
 				break;
 
 			default:
@@ -128,22 +125,22 @@ int main(void)
 					char humidityStr[25] = "The humidity is: ";
 					char tempStr[25] = "The temperature is: ";
 
-					USARTn_TxString(&USART0, (humidityStr));
+					USART0.tx((humidityStr));
 					itoa( ThermSensor.GetHumidity(), &outputString[0], 10);
-					USARTn_TxString(&USART0, outputString);
-					USARTn_NewLine(&USART0);
+					USART0.tx(outputString);
+					USART0.NewLine();
 
 					strcat(humidityStr, outputString);
 					strncat(humidityStr, "\n", 2);
 					WirelessDev.Transmit(&dest_Address[0], (uint8_t*)humidityStr, strlen(humidityStr)+1);
 					WirelessDev.TransferSync();
 
-					USARTn_TxString(&USART0, (tempStr));
+					USART0.tx((tempStr));
 					itoa( ThermSensor.GetTemperature(), &outputString[0], 10);
-					USARTn_TxString(&USART0, outputString);
-					USARTn_NewLine(&USART0);
-					USARTn_NewLine(&USART0);
-					USARTn_NewLine(&USART0);
+					USART0.tx(outputString);
+
+					USART0.NewLine();;
+					USART0.NewLine();
 
 					strcat(tempStr, outputString);
 					strncat(tempStr, "\n", 2);
@@ -166,7 +163,7 @@ ISR(USART_RX_vect)
 	rxChar = UDR0;
 	rxFlag = 1;
 	//uartTxString("Rcvd its working");
-	USARTn_Tx(&USART0, rxChar);
+	USART0.tx(rxChar);
 }
 
 

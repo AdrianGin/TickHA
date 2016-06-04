@@ -54,16 +54,14 @@ THE SOFTWARE.
 */
 //@{
 
-#ifndef _HARDUART_ROUTINES
-#define	_HARDUART_ROUTINES
+#ifndef _AVR_USARTN_H
+#define	_AVR_USARTN_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+#include "UART.h"
 
 #define	SET	1
 #define	CLEAR	0
@@ -110,20 +108,18 @@ extern "C" {
 #endif 
 
 #define	BAUD_DEFAULT	BAUD9600
-
-
-#define	PARITY_MASK		(0x30)
+#define	PARITY_MASK			(0x30)
 #define	NOPARITY			(0x00)
 #define	EVEN				(0x02)
-#define	ODD				(0x03)
+#define	ODD					(0x03)
 
-#define	CHARSIZE_MASK	(0x06)
-#define 	BIT8				(0x03)
+#define	CHARSIZE_MASK		(0x06)
+#define BIT8				(0x03)
 #define	BIT7				(0x02)
 #define	BIT6				(0x01)
 #define	BIT5				(0x00)
 
-#define	UCSRCMASK		(0x7F)
+#define	UCSRCMASK			(0x7F)
 
 
 /** uartInit:
@@ -169,77 +165,82 @@ extern "C" {
 #define UMSELn0 UMSEL00
 #define UMSELn1 UMSEL01
 
-typedef struct USARTn {
 
-	volatile uint8_t* UCSRnA;
-	volatile uint8_t* UCSRnB;
-	volatile uint8_t* UCSRnC;
+namespace AVR
+{
 
-	volatile uint8_t* UBRRnH;
-	volatile uint8_t* UBRRnL;
+class USARTn : public Devices::UART
+{
 
-	volatile uint8_t* UDRn;
+public:
 
-} USARTn_t;
-
-//#ifdef __AVR_HAVE_PRR_PRUSART0
-extern USARTn_t USART0;
-//#endif
-
-#ifdef __AVR_HAVE_PRR_PRUSART1
-extern USARTn_t USART1;
-#endif
+	USARTn(volatile uint8_t& UCSRnA,
+		   volatile uint8_t& UCSRnB,
+		   volatile uint8_t& UCSRnC,
+		   volatile uint8_t& UBRRnH,
+		   volatile uint8_t& UBRRnL,
+		   volatile uint8_t& UDRn) noexcept;
 
 
-void USARTn_Init(USARTn_t* uart, uint8_t baudrate, uint8_t U2Xvalue);
+	void Init(uint16_t baudrate);
+	/** uartDisable:
+	 * Disables the Receiver and Transmitter modules*/
+	void Disable();
+
+	/** uartSetBaud:
+	 * Changes the baudrate to the specified value.
+	 * See the datasheet for more details on what the
+	 * Baudrate generation registers should be.
+	 */
+	void SetBaud(uint16_t baudrate);
+
+	/** uartTxString:
+	 * Outputs the passed string to the UART.Tx pin
+	 * The output is true ouput, not inverted, so a MAX232 or some sort of
+	 * TTL -> +/- 15V converter is required.
+	 */
+	void tx(char* outString);
+
+	void tx(const char* outString_P);
+	void tx_P(const char* outString_P);
+
+	/** uartTx:
+	 *
+	 * Transmits the passed byte to the Uart.Tx pin.
+	 *
+	 */
+	void tx(uint8_t outbyte);
+
+	/**
+	 *  Prints out nbytes of buffer to the UART
+	 */
+	void tx(uint8_t* buffer, uint8_t nbytes );
+
+	/* ISR(SIG_UART_RECV)
+	 *
+	 * The interrupt routine for when a receive is complete
+	 */
+	//ISR(SIG_UART_RECV);
+
+	void NewLine();
+
+
+private:
+	volatile uint8_t& UCSRnA;
+	volatile uint8_t& UCSRnB;
+	volatile uint8_t& UCSRnC;
+
+	volatile uint8_t& UBRRnH;
+	volatile uint8_t& UBRRnL;
+
+	volatile uint8_t& UDRn;
+
+
+};
 
 
 
-/** uartDisable:
- * Disables the Receiver and Transmitter modules*/
-void USARTn_Disable(USARTn_t* uart);
-
-
-
-/** uartSetBaud:
- * Changes the baudrate to the specified value.
- * See the datasheet for more details on what the
- * Baudrate generation registers should be.
- */
-void USARTn_SetBaud(USARTn_t* uart, uint8_t baudrateL, uint8_t baudrateH);
-
-
-/** uartTxString:
- * Outputs the passed string to the UART.Tx pin
- * The output is true ouput, not inverted, so a MAX232 or some sort of
- * TTL -> +/- 15V converter is required.
- */
-void USARTn_TxString(USARTn_t* uart, char* outString);
-
-void USARTn_TxString_P(USARTn_t* uart, const char* outString_P);
-
-/** uartTx:
- *
- * Transmits the passed byte to the Uart.Tx pin.
- *
- */
-void USARTn_Tx(USARTn_t* uart, uint8_t outbyte);
-
-/** uartTxDump:
- *  Prints out nbytes of buffer to the UART
- */
-void USARTn_TxDump(USARTn_t* uart, uint8_t* buffer, uint8_t nbytes );
-
-/* ISR(SIG_UART_RECV)
- *
- * The interrupt routine for when a receive is complete
- */
-//ISR(SIG_UART_RECV);
-
-void USARTn_NewLine(USARTn_t* uart);
-
-#ifdef __cplusplus
 }
-#endif
+
 
 #endif

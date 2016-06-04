@@ -27,7 +27,7 @@ THE SOFTWARE.
 #define _API_LOG_H
 
 #include <stdlib.h>
-#include "Terminal.h"
+#include "UART.h"
 
 
 namespace API
@@ -46,10 +46,10 @@ public:
 		FATAL,
 	} ;
 
-	Log(void) noexcept;
+	Log(Devices::UART& term) noexcept;
 	//Log(Devices::Terminal& term) noexcept;
 
-	void print_trace(uint8_t loglevel, const char* file, const char* function, int line);
+	void print_trace(uint8_t loglevel, char* file, char* function, int line);
 	void print(uint8_t loglevel, char* string);
 	// Prints out the string followed by a number in decimal
 	void print_dec(uint8_t loglevel, char* string, uint16_t dec);
@@ -60,18 +60,35 @@ public:
 
 private:
 
-	//Devices::Terminal& term;
+	Devices::UART& term;
 
 
 };
 
 
 
-
-
-
-
 }
+
+
+extern API::Log Log;
+
+#ifndef NDEBUG
+
+#define LOG_PRINT(level, string) Log.print_trace(level, 0, (char*)__func__, __LINE__); Log.print(level, (char*)string)
+#define LOG_PRINT_DEC(level, string, num) Log.print_trace(level, (char*)__FILE__, (char*)__func__, __LINE__); Log.print_dec(level, (char*)string, num)
+#define LOG_PRINT_HEX(level, string, num) Log.print_trace(level, (char*)__FILE__, (char*)__func__, __LINE__); Log.print_hex(level, (char*)string, num)
+#define LOG_PRINT_HEXDUMP(level, string, ptr, num) Log.print_trace(level, (char*)__FILE__, (char*)__func__, __LINE__); Log.print_hexDump(level, (char*)string, ptr, num)
+
+#else
+
+#define LOG_PRINT(level, string) ((void)0)
+#define LOG_PRINT_DEC(level, string, num) ((void)0)
+#define LOG_PRINT_HEX(level, string, num) ((void)0)
+#define LOG_PRINT_HEXDUMP(level, string, ptr, num) ((void)0)
+
+
+#endif
+
 
 
 

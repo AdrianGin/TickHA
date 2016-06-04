@@ -23,12 +23,65 @@ THE SOFTWARE.
 */
 
 
+#ifndef	_DEVICES_UART_H
+#define	_DEVICES_UART_H
+
 #include <stdint.h>
-#include <avr/pgmspace.h>
-#include "USARTn.h"
-#include "Log.h"
-#include "debug.h"
 
 
-API::Log Log = API::Log();
+namespace Devices
+{
+
+class UART
+{
+
+public:
+
+	enum eBaudRates
+	{
+		BAUD2400,
+		BAUD4800,
+		BAUD9600,
+		BAUD19200,
+		BAUD31250, //MIDI
+		BAUD38400,
+		BAUD57600,
+		BAUD115200,
+	};
+
+	virtual void Init(uint16_t baudrate) = 0;
+	virtual void tx(uint8_t c) = 0;
+	virtual void tx(char* string) = 0;
+	virtual void tx(const char* string) = 0;
+
+	void tx_newline(void);
+
+private:
+
+};
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
+
+
+
 

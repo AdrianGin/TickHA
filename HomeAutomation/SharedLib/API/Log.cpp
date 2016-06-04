@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 #include <avr/pgmspace.h>
 
-#include "USARTn.h"
+#include "UART.h"
 #include "Log.h"
 
 
@@ -41,33 +41,24 @@ uint8_t DebugLevel = API::Log::INFO;
 // Prints out the string
 const char LOG_SEPARATOR[] PROGMEM = "::";
 
-
-Log::Log(void) noexcept
+Log::Log(Devices::UART& term) noexcept : term(term)
 {
 }
 
-/*
-Log::Log(Devices::Terminal& term) noexcept : term(term)
-{
 
-}*/
-
-
-
-
-void Log::print_trace(uint8_t loglevel, const char* file, const char* function, int line)
+void Log::print_trace(uint8_t loglevel, char* file, char* function, int line)
 {
 
 	if( DebugLevel <= loglevel )
 	{
-		USARTn_TxString(&USART0, (char*)function);
-		USARTn_TxString_P(&USART0, LOG_SEPARATOR);
+		term.tx(function);
+		term.tx(LOG_SEPARATOR);
 
 		char outputString[6];
 		utoa(line, &outputString[0], 10);
-		USARTn_TxString(&USART0, outputString);
+		term.tx(outputString);
 
-		USARTn_TxString_P(&USART0, LOG_SEPARATOR);
+		term.tx(LOG_SEPARATOR);
 	}
 }
 
@@ -76,8 +67,8 @@ void Log::print(uint8_t loglevel, char* string)
 {
 	if( DebugLevel <= loglevel )
 	{
-		USARTn_TxString(&USART0, string);
-		USARTn_NewLine(&USART0);
+		term.tx(string);
+		term.tx_newline();
 	}
 }
 
@@ -88,10 +79,10 @@ void Log::print_dec(uint8_t loglevel, char* string, uint16_t dec)
 	if( DebugLevel <= loglevel )
 	{
 		char outputString[6];
-		USARTn_TxString(&USART0, string);
+		term.tx(string);
 		utoa(dec, &outputString[0], 10);
-		USARTn_TxString(&USART0, outputString);
-		USARTn_NewLine(&USART0);
+		term.tx(outputString);
+		term.tx_newline();
 	}
 }
 
@@ -102,10 +93,10 @@ void Log::print_hex(uint8_t loglevel, char* string, uint16_t hex)
 	if( DebugLevel <= loglevel )
 	{
 		char outputString[6];
-		USARTn_TxString(&USART0, string);
+		term.tx(string);
 		utoa(hex, &outputString[0], 16);
-		USARTn_TxString(&USART0, outputString);
-		USARTn_NewLine(&USART0);
+		term.tx(outputString);
+		term.tx_newline();
 	}
 }
 
@@ -116,18 +107,18 @@ void Log::print_hexDump(uint8_t loglevel, char* string, uint8_t* dumpPtr, uint16
 	if( DebugLevel <= loglevel )
 	{
 		char outputString[6];
-		USARTn_TxString(&USART0, string);
+		term.tx(string);
 
 		for( uint16_t i = 0; i < n; ++i)
 		{
 			utoa(dumpPtr[i], &outputString[0], 16);
-			USARTn_TxString_P(&USART0, PSTR("0x"));
-			USARTn_TxString(&USART0, outputString);
-			USARTn_Tx(&USART0, ' ');
+			term.tx(PSTR("0x"));
+			term.tx(outputString);
+			term.tx(' ');
 
 		}
 
-		USARTn_NewLine(&USART0);
+		term.tx_newline();
 	}
 }
 

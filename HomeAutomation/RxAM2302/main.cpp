@@ -1,15 +1,16 @@
 
+#include <AVRUSARTn.h>
 #include "AVRGPIO.h"
 #include "AVRSPI.h"
-#include "USARTn.h"
 #include "AM2302.h"
-
+#include "nRF24L01.h"
 #include <stdlib.h>
 #include <string.h>
 
 #include "hardwareSpecific.h"
 
-#include "debug.h"
+#include "hw_config.h"
+#include "Log.h"
 
 AVR::GPIO DebugLED = AVR::GPIO(DDRB, PORTB, PINB, PB0);
 
@@ -42,12 +43,11 @@ int main(void)
 	DebugLED.Init( Devices::GPIO::OUTPUT );
 	DebugLED.SetOutput( Devices::GPIO::HIGH );
 
-	USARTn_Init(&USART0, BAUD19200, FAST);
+	USART0.Init(BAUD19200);
 	/*Enable interrupts*/
 	sei();
 
 	/*Enable receive complete interrupt*/
-	*USART0.UCSRnB |= (1<<RXCIEn);
 
 	_delay_ms(100);
 
@@ -82,7 +82,7 @@ int main(void)
 				LOG_PRINT_HEXDUMP(API::Log::INFO, "Received: ", receiveBuffer, bytesRxed);
 			}
 
-			USARTn_TxString(&USART0, (char*)receiveBuffer);
+			USART0.tx( (char*) receiveBuffer);
 			packetCount++;
 		}
 
@@ -103,7 +103,7 @@ int main(void)
 ISR(USART_RX_vect)
 {
 	//uartTxString("Rcvd its working");
-	USARTn_Tx(&USART0, UDR0);
+	USART0.tx(UDR0);
 }
 
 
