@@ -51,9 +51,13 @@ public:
 
 	virtual void Init(uint16_t baudrate) = 0;
 	virtual void tx(uint8_t c) = 0;
-	virtual void tx(char* string) = 0;
 	virtual void tx(const char* string) = 0;
 
+	/**
+	 *  Prints out nbytes of buffer to the UART
+	 */
+	void tx(uint8_t* buffer, uint8_t nbytes );
+	void tx(char* string);
 	void tx_newline(void);
 
 private:

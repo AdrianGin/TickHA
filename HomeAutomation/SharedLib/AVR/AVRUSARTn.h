@@ -199,10 +199,7 @@ public:
 	 * The output is true ouput, not inverted, so a MAX232 or some sort of
 	 * TTL -> +/- 15V converter is required.
 	 */
-	void tx(char* outString);
-
 	void tx(const char* outString_P);
-	void tx_P(const char* outString_P);
 
 	/** uartTx:
 	 *
@@ -211,10 +208,7 @@ public:
 	 */
 	void tx(uint8_t outbyte);
 
-	/**
-	 *  Prints out nbytes of buffer to the UART
-	 */
-	void tx(uint8_t* buffer, uint8_t nbytes );
+	inline void tx(char* string){ UART::tx(string); }
 
 	/* ISR(SIG_UART_RECV)
 	 *
@@ -222,7 +216,6 @@ public:
 	 */
 	//ISR(SIG_UART_RECV);
 
-	void NewLine();
 
 
 private:

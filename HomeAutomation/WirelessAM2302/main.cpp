@@ -112,12 +112,12 @@ int main(void)
 		{
 			case Devices::AM2302::ERR_PARITY:
 				USART0.tx("Parity Error");
-				USART0.NewLine();
+				USART0.tx_newline();
 				break;
 
 			case Devices::AM2302::ERR_CONNECTION:
 				USART0.tx("Connection Error");
-				USART0.NewLine();
+				USART0.tx_newline();
 				break;
 
 			default:
@@ -128,7 +128,7 @@ int main(void)
 					USART0.tx((humidityStr));
 					itoa( ThermSensor.GetHumidity(), &outputString[0], 10);
 					USART0.tx(outputString);
-					USART0.NewLine();
+					USART0.tx_newline();
 
 					strcat(humidityStr, outputString);
 					strncat(humidityStr, "\n", 2);
@@ -139,8 +139,8 @@ int main(void)
 					itoa( ThermSensor.GetTemperature(), &outputString[0], 10);
 					USART0.tx(outputString);
 
-					USART0.NewLine();;
-					USART0.NewLine();
+					USART0.tx_newline();;
+					USART0.tx_newline();
 
 					strcat(tempStr, outputString);
 					strncat(tempStr, "\n", 2);

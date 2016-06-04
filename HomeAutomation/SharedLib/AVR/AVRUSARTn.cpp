@@ -124,15 +124,6 @@ void USARTn::tx(uint8_t outbyte)
 	UDRn	= outbyte;
 }
 
-/** Writes nbytes of buffer to the UART */
-void USARTn::tx(uint8_t* buffer, uint8_t nbytes )
-{
-	uint16_t i = 0;
-	while( i++ < nbytes )
-	{
-		USARTn::tx(*buffer++);
-	}
-}
 
 
 /* uartTxString:
@@ -140,40 +131,17 @@ void USARTn::tx(uint8_t* buffer, uint8_t nbytes )
  * The output is true ouput, not inverted, so a MAX232 or some sort of
  * TTL -> +/- 15V converter is required.
  */
-void USARTn::tx(char* outString)
-{
-	while( *outString )
-	{
-		USARTn::tx(*outString++);
-   }
-	
-}
-
 /* Usage: uartTxString_P( PSTR("hello!") ); */
 /* Send a string which resides in the program memory */
-void USARTn::tx_P(const char* outString_P)
-{
-   char c;
-   while( (c = pgm_read_byte(outString_P++)) )
-   {
-	   USARTn::tx(c);
-   }
-}
-
 void USARTn::tx(const char* outString_P)
 {
    char c;
    while( (c = pgm_read_byte(outString_P++)) )
    {
-	   USARTn::tx(c);
+	   tx(c);
    }
 }
 
-void USARTn::NewLine()
-{
-	USARTn::tx('\r');
-	USARTn::tx('\n');
-}
 
 /* To echo the receiver buffer, write this code in the main.c file */
 /*
