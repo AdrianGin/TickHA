@@ -19,7 +19,7 @@ void TSL2561::Init()
 	I2C.Transmit(POWER_UP);
 	I2C.Stop();
 
-	LOG_PRINT(API::Log::DEBUG, "TSL2561 Init'ed");
+	LOG_PRINT(API::Log::DBG, "TSL2561 Init'ed");
 
 }
 
@@ -37,8 +37,8 @@ uint16_t TSL2561::GetRawLevel(uint8_t channel)
 	rawLevel |= (I2C.Read(Devices::I2C::NACK_BIT) << 8);
 	I2C.Stop();
 
-	LOG_PRINT_DEC(API::Log::DEBUG, "Channel: ", channel);
-	LOG_PRINT_DEC(API::Log::DEBUG, "RawLevel: ", rawLevel);
+	LOG_PRINT_DEC(API::Log::DBG, "Channel: ", channel);
+	LOG_PRINT_DEC(API::Log::DBG, "RawLevel: ", rawLevel);
 
 	return 0;
 }
@@ -57,11 +57,11 @@ uint16_t TSL2561::GetLuxLevel(void)
 	ch1 |= (I2C.Read(Devices::I2C::NACK_BIT) << 8);
 	I2C.Stop();
 
-	LOG_PRINT_DEC(API::Log::DEBUG, "RawLevelCh0: ", ch0);
-	LOG_PRINT_DEC(API::Log::DEBUG, "RawLevelCh1: ", ch1);
+	LOG_PRINT_DEC(API::Log::DBG, "RawLevelCh0: ", ch0);
+	LOG_PRINT_DEC(API::Log::DBG, "RawLevelCh1: ", ch1);
 
 	luxLevel = CalculateLux(0, 2, ch0, ch1);
-	LOG_PRINT_DEC(API::Log::DEBUG, "Lux Level: ", luxLevel);
+	LOG_PRINT_DEC(API::Log::DBG, "Lux Level: ", luxLevel);
 
 	return luxLevel;
 }

@@ -23,14 +23,14 @@ THE SOFTWARE.
 */
 
 
-#include <stdint.h>
-#include <avr/pgmspace.h>
+#ifndef _HW_CONFIG_H
+#define _HW_CONFIG_H
+
 #include <AVRUSARTn.h>
-#include "Log.h"
 
 
-AVR::USARTn USART0 = AVR::USARTn(UCSR0A, UCSR0B, UCSR0C, UBRR0H, UBRR0L, UDR0);
-API::Log Log = API::Log(USART0);
+extern AVR::USARTn USART0;
 
-uint8_t DebugLevel = API::Log::DBG;
 
+
+#endif

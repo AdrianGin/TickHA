@@ -22,15 +22,24 @@ THE SOFTWARE.
 
 */
 
+#ifndef _HARDWARE_SPECIFIC_H
+#define _HARDWARE_SPECIFIC_H
 
 #include <stdint.h>
+#include <util/delay.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/power.h>
 #include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
-#include "Log.h"
+
+#include <util/delay_basic.h>
+
+//It is important that this is very accurate or we get parity errors.
+static inline void Delay_us(uint16_t us)
+{
+	 _delay_loop_2(us * (uint16_t)(F_CPU / 4e6) );
+}
 
 
-AVR::USARTn USART0 = AVR::USARTn(UCSR0A, UCSR0B, UCSR0C, UBRR0H, UBRR0L, UDR0);
-API::Log Log = API::Log(USART0);
 
-uint8_t DebugLevel = API::Log::DBG;
-
+#endif

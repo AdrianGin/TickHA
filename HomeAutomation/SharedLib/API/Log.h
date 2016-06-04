@@ -39,7 +39,7 @@ class Log
 public:
 	enum
 	{
-		DEBUG = 0,
+		DBG = 0,
 		INFO,
 		WARN,
 		ERR,
