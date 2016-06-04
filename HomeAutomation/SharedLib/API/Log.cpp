@@ -30,12 +30,10 @@ THE SOFTWARE.
 #include "UART.h"
 #include "Log.h"
 
+extern uint8_t DebugLevel;
 
 namespace API
 {
-
-
-uint8_t DebugLevel = API::Log::INFO;
 
 
 // Prints out the string

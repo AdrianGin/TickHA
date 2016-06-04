@@ -34,6 +34,7 @@ THE SOFTWARE.
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include "AVRTWI.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -42,53 +43,61 @@ THE SOFTWARE.
 #include <util/twi.h>
 #include <util/delay.h>
 
-#include "TWI.h"
+
+namespace AVR
+{
 
 #define I2C_DEBUG 0
 
 
-/* i2cSetBitRate:
- * Sets up the i2c bitrate generator
+/* AVRTWI::SetBitRate:
+ * Sets up the AVRTWI:: bitrate generator
  */
-void i2cSetBitRate(uint8_t bitrate, uint8_t prescale)
+void AVRTWI::SetBitRate(uint8_t br)
 {
+	uint8_t bitrate = TWI_100KHZ;
+	if( bitrate == Devices::I2C::CLK_400KHZ )
+	{
+		bitrate = TWI_400KHZ;
+	}
+
 	TWBR = bitrate;
-	TWSR = (TWSR & (~TWI_PRESCALE_MASK)) | (prescale << TWPS0);
+	TWSR = (TWSR & (~TWI_PRESCALE_MASK)) | (0 << TWPS0);
 }
 
 
 
-/* i2cInit:
+/* AVRTWI::Init:
  * Initialise the TWI modules by enabling the 
  * ACKnowledge bit and the TWI Enable bit
  *
  * Set the speed of the bitrate generator as well.
  */
-void i2cInit(uint8_t bitrate, uint8_t prescale)
+void AVRTWI::Init(uint8_t bitrate)
 {
-	i2cSetBitRate(bitrate, prescale);
+	AVRTWI::SetBitRate(bitrate);
 	TWCR |= (1<<TWEA) | (1<<TWEN);
 	
 }
 
-/* i2cDisable:
+/* AVRTWI::Disable:
  * Disables the TWI Module access to the SDA and SCL pins
  *
  */
-void i2cDisable(void)
+void AVRTWI::Disable(void)
 {
 	TWCR &=  ~(1<<TWEN);
 }
 
 #if I2C_DEBUG == 1
-/* i2cError:
+/* AVRTWI::Error:
  * This is called when there is unexpected action on the TWI interface.
  * 
  * This function prints out the expected status code
  * followed by the actual status code. This function uses the hardware UART.
  * to transmit the data
  */
-void i2cError(uint8_t expected_status)
+void AVRTWI::Error(uint8_t expected_status)
 {
 	uint8_t error[3];
 //	uartInit(BAUD9600, FAST);
@@ -113,13 +122,13 @@ void i2cError(uint8_t expected_status)
 }
 #endif
 
-/* i2cStart:
+/* AVRTWI::Start:
  * Place a start bit on the TWI Bus 
  *
  */	
 /* TWINT is cleared when a 1 is written to it*/
 /* TWI Operations take place when TWINT is cleared (set to 1) */
-void i2cStart(void)
+void AVRTWI::Start(void)
 {
 	TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN);
 	/* Wait until the TW Interrupt flag is set (TWI Ready) */
@@ -128,13 +137,13 @@ void i2cStart(void)
 }
 
 
-/* i2cStop:
+/* AVRTWI::Stop:
  * Place a stop bit on the TWI Bus 
  *
  */	
 /* TWINT is cleared when a 1 is written to it*/
 /* TWI Operations take place when TWINT is cleared (set to 1) */
-void i2cStop(void)
+void AVRTWI::Stop(void)
 {
 	TWCR = (1<<TWINT) | (1<<TWSTO) | (1<<TWEN);
 	/* Wait until the TW Interrupt flag is set (TWI Ready) */
@@ -144,12 +153,12 @@ void i2cStop(void)
 
 
 
-/* i2cTransmit:
+/* AVRTWI::Transmit:
  * The value in outbyte	is sent to the device 
  * The device should have already been addressed using
- * i2cAddress(...);
+ * AVRTWI::Address(...);
  */
-void i2cTransmit(uint8_t outbyte)
+void AVRTWI::Transmit(uint8_t outbyte)
 {
 	/* If the ACK was successfully received, then transmit the databyte */
 	TWDR = outbyte;
@@ -163,36 +172,23 @@ void i2cTransmit(uint8_t outbyte)
 	/* Check that the Data was successfully sent */
 	if( (TWSR & TW_STATUS_MASK) != TW_MT_DATA_ACK )
 	{  
-		i2cError(TW_MT_DATA_ACK);
+		AVRTWI::Error(TW_MT_DATA_ACK);
 	}
 #endif
 
 }
 
 
-/* i2cTransmitBlock:
- * Outputs n number of bytes onto the TWI Bus.
- */
-void i2cTransmitBlock(uint8_t* data_ptr, uint8_t n)
-{
-	uint8_t i;
-	
-	for( i = 0; i < n; i++)
-	{
-		i2cTransmit(data_ptr[i]);
-	}
-
-}
 
 
 
-/* i2cAdrress:
+/* AVRTWI::Adrress:
  * Tranmits the passed address and RW bit to the TWI Bus lines
  */
-void i2cAddress(uint8_t address, uint8_t rw_bit)
+void AVRTWI::Address(uint8_t address, uint8_t rw_bit)
 {
 	/* Place a start condition on the TWI Bus and clear the interrupt*/
-	i2cStart();
+	AVRTWI::Start();
 
 #if I2C_DEBUG == 1	
 	/* Check that the start/repeated start bit was successfully sent */
@@ -200,7 +196,7 @@ void i2cAddress(uint8_t address, uint8_t rw_bit)
 			&&
 		  (TWSR & TW_STATUS_MASK) !=(TW_REP_START)  )
 	{
-		i2cError(TW_START);
+		AVRTWI::Error(TW_START);
 	}
 #endif	
 	
@@ -220,7 +216,7 @@ void i2cAddress(uint8_t address, uint8_t rw_bit)
 		/* Check that the SLA+W+ACK was successfully received */
 		if( (TWSR & TW_STATUS_MASK) != TW_MT_SLA_ACK )
 		{
-			i2cError(TW_MT_SLA_ACK);
+			AVRTWI::Error(TW_MT_SLA_ACK);
 		}
 	}
 	else
@@ -228,7 +224,7 @@ void i2cAddress(uint8_t address, uint8_t rw_bit)
 		/* Check that the SLA+R+ACK was successfully received */
 		if( (TWSR & TW_STATUS_MASK) != TW_MR_SLA_ACK )
 		{
-			i2cError(TW_MR_SLA_ACK);
+			AVRTWI::Error(TW_MR_SLA_ACK);
 		}
 	}
 #endif
@@ -239,7 +235,7 @@ void i2cAddress(uint8_t address, uint8_t rw_bit)
 
 
 
-/* i2cRead:
+/* AVRTWI::Read:
  * The value in receiver buffer is returned.
  * This function should only be called after SLA+R+ACK has been sent */
 /* Pass a 0 (LAST_BYTE) to the acknowledge bit to end the read
@@ -248,7 +244,7 @@ void i2cAddress(uint8_t address, uint8_t rw_bit)
  * with a NACK.
  */
  
-uint8_t i2cRead(uint8_t acknowledge_bit)
+uint8_t AVRTWI::Read(uint8_t acknowledge_bit)
 {
 	
 	/* Setup the acknowledge bit and initiate the read */
@@ -263,7 +259,7 @@ uint8_t i2cRead(uint8_t acknowledge_bit)
 		/* Check that the SLA+R+ACK was successfully received */
 		if( (TWSR & TW_STATUS_MASK) != TW_MR_DATA_ACK )
 		{
-			i2cError(TW_MR_DATA_ACK);
+			AVRTWI::Error(TW_MR_DATA_ACK);
 		}
 	}
 	else
@@ -271,7 +267,7 @@ uint8_t i2cRead(uint8_t acknowledge_bit)
 		/* Check that the SLA+R+NACK was successfully received */
 		if( (TWSR & TW_STATUS_MASK) != TW_MR_DATA_NACK )
 		{
-			i2cError(TW_MR_DATA_NACK);
+			AVRTWI::Error(TW_MR_DATA_NACK);
 		}
 	}
 #endif
@@ -283,26 +279,10 @@ uint8_t i2cRead(uint8_t acknowledge_bit)
 
 
 
-/* i2cReadBlock:
- * Reads 'size' number of bytes to the passed pointer
- *
- */
-void i2cReadBlock(uint8_t* destination_ptr, uint8_t size)
-{
-	uint8_t i;
-	for( i = 0; i < (size-1); i++)
-	{
-		destination_ptr[i] = i2cRead(ACK_BIT);
-	}
-	
-	destination_ptr[i] = i2cRead(NACK_BIT);
+
+
+
 }
-
-
-
-
-
-
 
 
 
