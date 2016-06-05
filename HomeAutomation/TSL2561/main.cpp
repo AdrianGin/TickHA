@@ -32,7 +32,7 @@ THE SOFTWARE.
 #include "AM2302.h"
 #include "nRF24L01.h"
 #include "TSL2561.h"
-
+#include "BMP180.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -71,7 +71,7 @@ Devices::nRF24L01 WirelessDev = Devices::nRF24L01(1, SPI1, nRF24CE, nRF24CSN, nR
 AVR::AVRTWI TWI = AVR::AVRTWI();
 
 Devices::TSL2561  LightSensor = Devices::TSL2561(TWI, 0x72);
-
+Devices::BMP180   Barometer = Devices::BMP180(TWI, Delay_us);
 
 volatile uint8_t rxChar = 0;
 volatile uint8_t rxFlag = 0;
@@ -96,12 +96,13 @@ int main(void)
 	WirelessDev.Init();
 	WirelessDev.SetAckState(1);
 
+	Barometer.Init( Devices::BMP180::X1);
 	LightSensor.Init();
 
 	uint8_t dest_Address[] = {0xE8,0xE8,0xE8,0xE8,0xE8};
 	uint16_t lux;
 
-	char header[] = ("Lux\tHumidity\tTemperature");
+	char header[] = ("Lux\tHumidity\tTemp1\tTemp2\tPressure");
 
 	USART0.tx( header );
 	WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, strlen(header)+1);
@@ -113,6 +114,8 @@ int main(void)
 
 	while(1)
 	{
+
+
 		USART0.tx( header );
 		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)header, 3);
 		WirelessDev.TransferSync();
@@ -121,17 +124,10 @@ int main(void)
 		//Perform a double blink to indicate it is working
 
 		uint8_t err = ThermSensor.RequestData();
-		if( rxFlag )
-		{
-			WirelessDev.Transmit(&dest_Address[0], (uint8_t*)&rxChar, 1);
-			WirelessDev.TransferSync();
-			rxFlag = 0;
-		}
 
-		DebugLED.SetOutput( Devices::GPIO::HIGH );
-		_delay_ms(1000);
-		DebugLED.SetOutput( Devices::GPIO::LOW);
-		_delay_ms(1000);
+		DebugLED.SetOutput( Devices::GPIO::LOW );
+		_delay_ms(100);
+
 
 		itoa(  LightSensor.GetLuxLevel(), &outputString[0], 10);
 		USART0.tx(outputString);
@@ -167,6 +163,38 @@ int main(void)
 					break;
 				}
 		}
+
+
+
+		utoa(  Barometer.GetTemperature(), &outputString[1], 10);
+		USART0.tx(outputString);
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
+		WirelessDev.TransferSync();
+
+		ltoa(  Barometer.GetPressure(), &outputString[1], 10);
+		USART0.tx(outputString);
+		WirelessDev.Transmit(&dest_Address[0], (uint8_t*)outputString, strlen(outputString)+1);
+		WirelessDev.TransferSync();
+
+
+
+		if( WirelessDev.GetState() != Devices::nRF24L01::TRANSMIT_ERROR )
+		{
+			DebugLED.SetOutput( Devices::GPIO::HIGH);
+			_delay_ms(1900);
+		}
+		else
+		{
+			DebugLED.SetOutput( Devices::GPIO::LOW);
+			_delay_ms(500);
+			DebugLED.SetOutput( Devices::GPIO::HIGH );
+			_delay_ms(1400);
+
+			WirelessDev.Init();
+			WirelessDev.SetAckState(1);
+
+		}
+
 	}
 
 

@@ -71,14 +71,56 @@ void Log::print(uint8_t loglevel, char* string)
 }
 
 // Prints out the string followed by a number in decimal
+void Log::print_dec(uint8_t loglevel, char* string, int32_t dec)
+{
+
+	if( DebugLevel <= loglevel )
+	{
+		char outputString[12];
+		term.tx(string);
+		ltoa(dec, &outputString[0], 10);
+		term.tx(outputString);
+		term.tx_newline();
+	}
+}
+
+// Prints out the string followed by a number in decimal
+void Log::print_dec(uint8_t loglevel, char* string, uint32_t dec)
+{
+
+	if( DebugLevel <= loglevel )
+	{
+		char outputString[12];
+		term.tx(string);
+		ultoa(dec, &outputString[0], 10);
+		term.tx(outputString);
+		term.tx_newline();
+	}
+}
+
+// Prints out the string followed by a number in decimal
 void Log::print_dec(uint8_t loglevel, char* string, uint16_t dec)
 {
 
 	if( DebugLevel <= loglevel )
 	{
-		char outputString[6];
+		char outputString[12];
 		term.tx(string);
 		utoa(dec, &outputString[0], 10);
+		term.tx(outputString);
+		term.tx_newline();
+	}
+}
+
+// Prints out the string followed by a number in decimal
+void Log::print_dec(uint8_t loglevel, char* string, int16_t dec)
+{
+
+	if( DebugLevel <= loglevel )
+	{
+		char outputString[12];
+		term.tx(string);
+		itoa(dec, &outputString[0], 10);
 		term.tx(outputString);
 		term.tx_newline();
 	}

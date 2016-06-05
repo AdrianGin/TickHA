@@ -99,6 +99,8 @@ public:
 		en_ack = state;
 	}
 
+	uint8_t GetState(void) {return state;}
+
 
 
 private:
@@ -119,7 +121,6 @@ private:
 	GPIO& CE;
 	GPIO& CSN;
 	GPIO& IRQ;
-
 
 
 

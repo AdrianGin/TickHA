@@ -217,14 +217,11 @@ uint8_t nRF24L01::MainService()
 					statusByte |= (1<<MAX_RT);
 					nRF24L01::WriteRegister(STATUS, &statusByte, 1);
 
-					state = STANDBY1;
-
-
+					state = TRANSMIT_ERROR;
 
 					uint8_t configState;
 					nRF24L01::ReadRegister(CONFIG, &configState , 1);
 					LOG_PRINT_HEX( API::Log::DBG, "Config: ", configState);
-
 
 					nRF24L01::WriteData(FLUSH_TX, NULL, 0);
 

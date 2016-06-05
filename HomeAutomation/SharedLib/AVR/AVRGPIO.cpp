@@ -59,10 +59,6 @@ void GPIO::SetOutput( LogicLevel level)
 	{
 		return;
 	}
-
-
-
-
 	PIN = (1<<pinNumber);
 	currentlevel = level;
 }

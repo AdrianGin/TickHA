@@ -52,7 +52,12 @@ public:
 	void print_trace(uint8_t loglevel, char* file, char* function, int line);
 	void print(uint8_t loglevel, char* string);
 	// Prints out the string followed by a number in decimal
+	void print_dec(uint8_t loglevel, char* string, int32_t dec);
+	void print_dec(uint8_t loglevel, char* string, uint32_t dec);
 	void print_dec(uint8_t loglevel, char* string, uint16_t dec);
+	void print_dec(uint8_t loglevel, char* string, int16_t dec);
+
+
 	// Prints out the string followed by a number in hex
 	void print_hex(uint8_t loglevel, char* string, uint16_t hex);
 	// Prints out the string followed by a set of numbers in hex

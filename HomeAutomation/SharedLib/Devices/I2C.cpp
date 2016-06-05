@@ -44,7 +44,7 @@ void I2C::TransmitBlock(uint8_t* data_ptr, uint8_t n)
 
 	for( i = 0; i < n; i++)
 	{
-		I2C::Transmit(data_ptr[i]);
+		Transmit(data_ptr[i]);
 	}
 }
 
@@ -58,10 +58,10 @@ void I2C::ReadBlock(uint8_t* destination_ptr, uint8_t size)
 	uint8_t i;
 	for( i = 0; i < (size-1); i++)
 	{
-		destination_ptr[i] = I2C::Read( Devices::I2C::ACK_BIT);
+		destination_ptr[i] = Read( Devices::I2C::ACK_BIT);
 	}
 
-	destination_ptr[i] = I2C::Read( Devices::I2C::NACK_BIT);
+	destination_ptr[i] = Read( Devices::I2C::NACK_BIT);
 }
 
 
