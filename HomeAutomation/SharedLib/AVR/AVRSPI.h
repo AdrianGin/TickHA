@@ -22,39 +22,66 @@ THE SOFTWARE.
 
 */
 
-#ifndef _HARDWARE_SPECIFIC_H
-#define _HARDWARE_SPECIFIC_H
+
+
+/* SPI Routines for the ATMEGA Micro
+ * Author: Adrian Gin
+ * Date: 27/06/07
+ *
+ */
+
+/** \file spi.h
+	 \brief SPI Drivers for the AVR Core.
+*/
+
+/**	 
+
+	\ingroup avr_peripheral
+ 	\defgroup spi SPI Hardware Driver.
+ 	\code #include "spi.h" \endcode
+
+ 	 
+	 \par Description
+	 SPI Communications protocol for the AVR core.
+ 	 
+*/
+//@{
+ 
+
+#ifndef	_AVR_SPI_H
+#define	_AVR_SPI_H
 
 #include <stdint.h>
-#include <util/delay.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/power.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
-
+#include "AVRGPIO.h"
 #include "SPI.h"
 
-
-#include "AM2302.h"
-#include "nRF24L01.h"
-
-#include <util/delay_basic.h>
-
-/*
-#define SPI_DDR   (DDRB)
-#define SPI_PORT  (PORTB)
-#define SCK       (PB5)
-#define MISO      (PB4)
-#define MOSI      (PB3)
-#define nSS       (PB2)*/
-
-//It is important that this is very accurate or we get parity errors.
-static inline void Delay_us(uint16_t us)
+namespace AVR
 {
-	 _delay_loop_2(us * (uint16_t)(F_CPU / 4e6) );
-}
 
+
+class SPI : public Devices::SPI
+{
+public:
+
+	SPI(GPIO& SCK, GPIO& MISO, GPIO& MOSI, GPIO& nSS) noexcept;
+
+	void Init(void);
+	uint8_t TxByte(uint8_t data);
+	/** SPI_RxByte, the same as SPI_TxByte(0xFF) */
+	uint8_t RxByte(void);
+
+	void RxBlock(uint8_t* data, uint8_t n);
+	void TxBlock(uint8_t* data, uint8_t n);
+
+	GPIO& SCK;
+	GPIO& MISO;
+	GPIO& MOSI;
+	GPIO& nSS;
+
+};
+ 
+
+}
 
 
 #endif

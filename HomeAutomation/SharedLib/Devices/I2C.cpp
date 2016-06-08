@@ -22,39 +22,49 @@ THE SOFTWARE.
 
 */
 
-#ifndef _HARDWARE_SPECIFIC_H
-#define _HARDWARE_SPECIFIC_H
-
-#include <stdint.h>
-#include <util/delay.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/power.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
-
-#include "SPI.h"
+/* Updated for C++
+ *
+ */
+ 
+ 
+#include "I2C.h"
 
 
-#include "AM2302.h"
-#include "nRF24L01.h"
 
-#include <util/delay_basic.h>
-
-/*
-#define SPI_DDR   (DDRB)
-#define SPI_PORT  (PORTB)
-#define SCK       (PB5)
-#define MISO      (PB4)
-#define MOSI      (PB3)
-#define nSS       (PB2)*/
-
-//It is important that this is very accurate or we get parity errors.
-static inline void Delay_us(uint16_t us)
+namespace Devices
 {
-	 _delay_loop_2(us * (uint16_t)(F_CPU / 4e6) );
+
+
+/* AVRTWI::TransmitBlock:
+ * Outputs n number of bytes onto the TWI Bus.
+ */
+void I2C::TransmitBlock(uint8_t* data_ptr, uint8_t n)
+{
+	uint8_t i;
+
+	for( i = 0; i < n; i++)
+	{
+		Transmit(data_ptr[i]);
+	}
+}
+
+
+/* AVRTWI::ReadBlock:
+ * Reads 'size' number of bytes to the passed pointer
+ *
+ */
+void I2C::ReadBlock(uint8_t* destination_ptr, uint8_t size)
+{
+	uint8_t i;
+	for( i = 0; i < (size-1); i++)
+	{
+		destination_ptr[i] = Read( Devices::I2C::ACK_BIT);
+	}
+
+	destination_ptr[i] = Read( Devices::I2C::NACK_BIT);
 }
 
 
 
-#endif
+
+}

@@ -26,6 +26,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>API</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/SharedLib/API</locationURI>
+		</link>
+		<link>
 			<name>AVR</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/SharedLib/AVR</locationURI>

@@ -22,39 +22,36 @@ THE SOFTWARE.
 
 */
 
-#ifndef _HARDWARE_SPECIFIC_H
-#define _HARDWARE_SPECIFIC_H
+#ifndef _AVR_GPIO_H
+#define _AVR_GPIO_H
 
+
+#include "GPIO.h"
 #include <stdint.h>
-#include <util/delay.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/power.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
 
-#include "SPI.h"
+using Devices::GPIO;
 
-
-#include "AM2302.h"
-#include "nRF24L01.h"
-
-#include <util/delay_basic.h>
-
-/*
-#define SPI_DDR   (DDRB)
-#define SPI_PORT  (PORTB)
-#define SCK       (PB5)
-#define MISO      (PB4)
-#define MOSI      (PB3)
-#define nSS       (PB2)*/
-
-//It is important that this is very accurate or we get parity errors.
-static inline void Delay_us(uint16_t us)
+namespace AVR
 {
-	 _delay_loop_2(us * (uint16_t)(F_CPU / 4e6) );
+
+class GPIO : public Devices::GPIO
+{
+public:
+	GPIO(volatile uint8_t& DDR, volatile uint8_t& PORT, volatile uint8_t& PIN, uint8_t pn) noexcept;
+
+	void Init( Direction state );
+	void SetOutput( LogicLevel level);
+	uint8_t ReadInput();
+
+private:
+	volatile uint8_t &DDR;
+	volatile uint8_t &PORT;
+	volatile uint8_t &PIN;
+
+	const uint8_t pinNumber;
+
+};
+
+
 }
-
-
-
 #endif

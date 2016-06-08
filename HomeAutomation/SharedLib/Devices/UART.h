@@ -22,39 +22,70 @@ THE SOFTWARE.
 
 */
 
-#ifndef _HARDWARE_SPECIFIC_H
-#define _HARDWARE_SPECIFIC_H
+
+#ifndef	_DEVICES_UART_H
+#define	_DEVICES_UART_H
 
 #include <stdint.h>
-#include <util/delay.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/power.h>
-#include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
-
-#include "SPI.h"
 
 
-#include "AM2302.h"
-#include "nRF24L01.h"
-
-#include <util/delay_basic.h>
-
-/*
-#define SPI_DDR   (DDRB)
-#define SPI_PORT  (PORTB)
-#define SCK       (PB5)
-#define MISO      (PB4)
-#define MOSI      (PB3)
-#define nSS       (PB2)*/
-
-//It is important that this is very accurate or we get parity errors.
-static inline void Delay_us(uint16_t us)
+namespace Devices
 {
-	 _delay_loop_2(us * (uint16_t)(F_CPU / 4e6) );
+
+class UART
+{
+
+public:
+
+	enum eBaudRates
+	{
+		BAUD2400,
+		BAUD4800,
+		BAUD9600,
+		BAUD19200,
+		BAUD31250, //MIDI
+		BAUD38400,
+		BAUD57600,
+		BAUD115200,
+	};
+
+	virtual void Init(uint16_t baudrate) = 0;
+	virtual void tx(uint8_t c) = 0;
+	virtual void tx(const char* string) = 0;
+
+	/**
+	 *  Prints out nbytes of buffer to the UART
+	 */
+	void tx(uint8_t* buffer, uint8_t nbytes );
+	void tx(char* string);
+	void tx_newline(void);
+
+private:
+
+};
+
+
+
+
+
+
+
 }
 
 
 
+
+
+
+
+
+
+
+
+
+
 #endif
+
+
+
+

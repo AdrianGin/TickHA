@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2007 Stefan Engelke <mbox@stefanengelke.de>
+	Copyright (c) 2016 Adrian Gin (adrian.gin[at]gmail.com)
 
     Permission is hereby granted, free of charge, to any person 
     obtaining a copy of this software and associated documentation 
