@@ -27,7 +27,7 @@ int main(void)
 
 
 	clock_prescale_set(clock_div_1);
-	DEBUG_LED_DDR |= (DEBUG_LED_PIN);				//Set B1 to output for dbg LED
+	DEBUG_LED_DDR |= (DEBUG_LED_PIN);		//Set B1 to output for dbg LED
 	DEBUG_LED &= ~DEBUG_LED_PIN;			//Turn off dbg LED
 
 	USARTn_Init(&USART0, BAUD19200, FAST);

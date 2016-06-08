@@ -96,8 +96,3 @@ void nRF24_IRQCallback(nRF24L01_t* dev)
 {
 
 }
-
-
-
-
-
