@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 #include <stdint.h>
 #include <avr/pgmspace.h>
-#include <AVRUSARTn.h>
+#include "AVRUSARTn.h"
 #include "Log.h"
 
 
